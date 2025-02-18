@@ -6,4 +6,4 @@ router.get('/', (req, res) => {
     res.send({message: 'Ok'});
 })
 
-export default router;
+export { router };

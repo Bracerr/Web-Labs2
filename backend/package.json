@@ -5,11 +5,10 @@
   "description": "",
   "main": "./src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Bracerr",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
