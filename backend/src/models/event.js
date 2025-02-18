@@ -35,4 +35,4 @@ Event.init({
     timestamps: false,
 });
 
-export default Event;
+export { Event };

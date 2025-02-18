@@ -1,5 +1,5 @@
-import User from '../models/user.js';
-import Event from "../models/event.js";
+import { User } from '../models/user.js';
+import { Event } from "../models/event.js";
 
 const syncDatabase = async () => {
     try {
@@ -12,4 +12,4 @@ const syncDatabase = async () => {
     }
 };
 
-export {syncDatabase};
+export { syncDatabase };

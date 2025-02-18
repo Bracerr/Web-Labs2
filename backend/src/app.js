@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from "cors";
 import { config } from "dotenv";
-import router from "./routes/router.js";
+import { router } from "./routes/router.js";
 import { authenticateDatabase } from "./config/db.js"
 import { syncDatabase } from "./config/sync.js";
 
