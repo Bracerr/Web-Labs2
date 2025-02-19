@@ -2,8 +2,13 @@ import { userService } from '../services/userService.js';
 
 const userHandler = {
     createUser: async (req, res) => {
+        const { name, email } = req.body;
+        if (!name || !email) {
+            return res.status(400).json({
+                error: 'Обязательные поля: name, email'
+            })
+        }
         try {
-            const { name, email } = req.body;
             const newUser = await userService.createUser({ name, email });
             res.status(201).json(newUser);
         } catch (error) {
