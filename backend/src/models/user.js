@@ -31,5 +31,4 @@ User.init({
     timestamps: false,
 });
 
-
 export { User };
