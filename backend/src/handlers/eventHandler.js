@@ -1,4 +1,5 @@
 import { eventService } from '../services/eventService.js';
+import path from "path";
 
 const eventHandler = {
     getAllEvents: async (req, res) => {
@@ -34,6 +35,9 @@ const eventHandler = {
             const newEvent = await eventService.createEvent({ title, description, date, createdBy });
             res.status(201).json(newEvent);
         } catch (error) {
+            if (error.message === 'Пользователь не найден') {
+                return res.status(404).json({ error: 'Пользователь не найден' });
+            }
             console.error('Ошибка при создании мероприятия:', error);
             res.status(500).json({ error: 'Ошибка при создании мероприятия' });
         }
@@ -75,6 +79,28 @@ const eventHandler = {
         } catch (error) {
             console.error('Ошибка при удалении мероприятия:', error);
             res.status(500).json({ error: 'Ошибка при удалении мероприятия' });
+        }
+    },
+
+    uploadEventImage: async (req, res) => {
+        const { id } = req.params;
+        const event = await eventService.getEventById(id);
+        if (!event) {
+            return res.status(404).json({ error: 'Мероприятие не найдено' });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ error: 'Ошибка: файл не загружен' });
+        }
+
+        const imageUrl = path.join('uploads', req.file.filename);
+
+        try {
+            const updatedEvent = await eventService.updateEvent(id, { image_url: imageUrl });
+            res.status(200).json(updatedEvent);
+        } catch (error) {
+            console.error('Ошибка при обновлении мероприятия с изображением:', error);
+            res.status(500).json({ error: 'Ошибка при обновлении мероприятия с изображением' });
         }
     },
 };

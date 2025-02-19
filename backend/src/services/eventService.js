@@ -1,4 +1,5 @@
 import { eventRepository } from '../repositories/eventRepository.js';
+import { User } from '../models/user.js'
 
 const eventService = {
     getAllEvents: async () => {
@@ -8,6 +9,13 @@ const eventService = {
         return await eventRepository.getEventById(id);
     },
     createEvent: async (eventData) => {
+        const { createdBy } = eventData;
+
+        const user = await User.findByPk(createdBy);
+        if (!user) {
+            throw new Error('Пользователь не найден');
+        }
+
         return await eventRepository.createEvent(eventData);
     },
     updateEvent: async (id, eventData) => {
