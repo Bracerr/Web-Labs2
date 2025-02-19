@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import { router } from "./routes/router.js";
 import { authenticateDatabase } from "./config/db.js"
 import { syncDatabase } from "./config/sync.js";
+import { setRelation } from "./models/relaition.js";
 
 config()
 
@@ -27,6 +28,7 @@ const run = () => {
 
 authenticateDatabase()
     .then(syncDatabase)
+    .then(setRelation)
     .then(run)
     .catch(error => {
         console.error(error);

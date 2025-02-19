@@ -24,10 +24,6 @@ Event.init({
     createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'Users',
-            key: 'id',
-        },
     },
 }, {
     sequelize,
