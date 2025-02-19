@@ -2,6 +2,48 @@ import { eventService } from '../services/eventService.js';
 import path from "path";
 
 const eventHandler = {
+    /**
+     * @swagger
+     * tags:
+     *   name: Events
+     *   description: API для управления мероприятиями
+     */
+
+    /**
+     * @swagger
+     * /events:
+     *   get:
+     *     summary: Получить список всех мероприятий
+     *     tags: [Events]
+     *     responses:
+     *       200:
+     *         description: Успешный ответ с массивом мероприятий
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 type: object
+     *                 properties:
+     *                   id:
+     *                     type: integer
+     *                     description: ID мероприятия
+     *                   title:
+     *                     type: string
+     *                     description: Заголовок мероприятия
+     *                   description:
+     *                     type: string
+     *                     description: Описание мероприятия
+     *                   date:
+     *                     type: string
+     *                     format: date-time
+     *                     description: Дата мероприятия
+     *                   createdBy:
+     *                     type: integer
+     *                     description: ID создателя мероприятия
+     *       500:
+     *         description: Ошибка сервера
+     */
     getAllEvents: async (req, res) => {
         try {
             const events = await eventService.getAllEvents();
@@ -12,6 +54,43 @@ const eventHandler = {
         }
     },
 
+    /**
+     * @swagger
+     * /events/{id}:
+     *   get:
+     *     summary: Получить мероприятие по ID
+     *     tags: [Events]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         description: ID мероприятия
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: Успешный ответ с мероприятием
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 id:
+     *                   type: integer
+     *                 title:
+     *                   type: string
+     *                 description:
+     *                   type: string
+     *                 date:
+     *                   type: string
+     *                   format: date-time
+     *                 createdBy:
+     *                   type: integer
+     *       404:
+     *         description: Мероприятие не найдено
+     *       500:
+     *         description: Ошибка сервера
+     */
     getEventById: async (req, res) => {
         const { id } = req.params;
         try {
@@ -26,6 +105,57 @@ const eventHandler = {
         }
     },
 
+/**
+ * @swagger
+ * /events:
+ *   post:
+ *     summary: Создать новое мероприятие
+ *     tags: [Events]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Заголовок мероприятия
+ *               description:
+ *                 type: string
+ *                 description: Описание мероприятия
+ *               date:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Дата мероприятия
+ *               createdBy:
+ *                 type: integer
+ *                 description: ID создателя мероприятия
+ *     responses:
+ *       201:
+ *         description: Мероприятие успешно создано
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID созданного мероприятия
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 date:
+ *                   type: string
+ *                   format: date-time
+ *                 createdBy:
+ *                   type: integer
+ *       400:
+ *         description: Ошибка валидации или пользователь не найден
+ *       500:
+ *         description: Ошибка сервера
+ */
     createEvent: async (req, res) => {
         const { title, description, date, createdBy } = req.body;
         if (!title || !date || !createdBy) {
@@ -43,6 +173,66 @@ const eventHandler = {
         }
     },
 
+
+    /**
+     * @swagger
+     * /events/{id}:
+     *   put:
+     *     summary: Обновить мероприятие по ID
+     *     tags: [Events]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         description: ID мероприятия
+     *         schema:
+     *           type: integer
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               title:
+     *                 type: string
+     *                 description: Заголовок мероприятия
+     *               description:
+     *                 type: string
+     *                 description: Описание мероприятия
+     *               date:
+     *                 type: string
+     *                 format: date-time
+     *                 description: Дата мероприятия
+     *               createdBy:
+     *                 type: integer
+     *                 description: ID создателя мероприятия
+     *     responses:
+     *       200:
+     *         description: Мероприятие успешно обновлено
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 id:
+     *                   type: integer
+     *                 title:
+     *                   type: string
+     *                 description:
+     *                   type: string
+     *                 date:
+     *                   type: string
+     *                   format: date-time
+     *                 createdBy:
+     *                   type: integer
+     *       400:
+     *         description: Не переданы поля для обновления
+     *       404:
+     *         description: Мероприятие не найдено
+     *       500:
+     *         description: Ошибка сервера
+     */
     updateEvent: async (req, res) => {
         const { id } = req.params;
         const { title, description, date, createdBy } = req.body;
@@ -68,6 +258,27 @@ const eventHandler = {
         }
     },
 
+    /**
+     * @swagger
+     * /events/{id}:
+     *   delete:
+     *     summary: Удалить мероприятие по ID
+     *     tags: [Events]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         description: ID мероприятия
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       204:
+     *         description: Мероприятие успешно удалено
+     *       404:
+     *         description: Мероприятие не найдено
+     *       500:
+     *         description: Ошибка сервера
+     */
     deleteEvent: async (req, res) => {
         const { id } = req.params;
         try {
@@ -82,6 +293,59 @@ const eventHandler = {
         }
     },
 
+    /**
+     * @swagger
+     * /events/{id}/image:
+     *   post:
+     *     summary: Загрузить изображение для мероприятия
+     *     tags: [Events]
+     *     parameters:
+     *       - name: id
+     *         in: path
+     *         required: true
+     *         description: ID мероприятия
+     *         schema:
+     *           type: integer
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               image:
+     *                 type: string
+     *                 format: binary
+     *                 description: Изображение для загрузки
+     *     responses:
+     *       200:
+     *         description: Изображение успешно загружено и мероприятие обновлено
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 id:
+     *                   type: integer
+     *                 title:
+     *                   type: string
+     *                 description:
+     *                   type: string
+     *                 date:
+     *                   type: string
+     *                   format: date-time
+     *                 createdBy:
+     *                   type: integer
+     *                 image_url:
+     *                   type: string
+     *                   description: URL загруженного изображения
+     *       400:
+     *         description: Файл не загружен
+     *       404:
+     *         description: Мероприятие не найдено
+     *       500:
+     *         description: Ошибка сервера
+     */
     uploadEventImage: async (req, res) => {
         const { id } = req.params;
         const event = await eventService.getEventById(id);

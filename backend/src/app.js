@@ -5,6 +5,8 @@ import { router } from "./routes/router.js";
 import { authenticateDatabase } from "./config/db.js"
 import { syncDatabase } from "./config/sync.js";
 import { setRelation } from "./models/relaition.js";
+import swaggerUi from "swagger-ui-express";
+import {swaggerDocs} from "./config/swagger.js";
 
 config()
 
@@ -17,6 +19,8 @@ const run = () => {
     app.use(express.json());
     app.use('/', router);
 
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    
     app.listen(PORT, (err) => {
         if (err) {
             console.error('Ошибка при запуске сервера:', err);
