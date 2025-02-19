@@ -72,4 +72,4 @@ const eventHandler = {
     },
 };
 
-export default eventHandler;
+export { eventHandler };
