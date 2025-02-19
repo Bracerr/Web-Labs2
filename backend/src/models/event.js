@@ -24,11 +24,11 @@ Event.init({
     createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-            model: 'Users',
-            key: 'id',
-        },
     },
+    image_url: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    }
 }, {
     sequelize,
     modelName: 'Event',
