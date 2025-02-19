@@ -42,11 +42,18 @@ const eventHandler = {
     updateEvent: async (req, res) => {
         const { id } = req.params;
         const { title, description, date, createdBy } = req.body;
-        if (!title || !date || !createdBy) {
-            return res.status(400).json({ error: 'Обязательные поля: title, date, createdBy' });
+
+        const updateData = {};
+        if (title) updateData.title = title;
+        if (description) updateData.description = description;
+        if (date) updateData.date = date;
+        if (createdBy) updateData.createdBy = createdBy;
+
+        if (Object.keys(updateData).length === 0) {
+            return res.status(400).json({ error: 'Не переданы поля для обновления' });
         }
         try {
-            const updatedEvent = await eventService.updateEvent(id, { title, description, date, createdBy });
+            const updatedEvent = await eventService.updateEvent(id, updateData);
             if (!updatedEvent) {
                 return res.status(404).json({ error: 'Мероприятие не найдено' });
             }
