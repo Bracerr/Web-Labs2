@@ -1,23 +1,13 @@
-import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import path from "path";
+import YAML from 'yamljs';
+import { fileURLToPath } from 'url';
 
-const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'API Documentation',
-            version: '1.0.0',
-            description: 'API Documentation for my application',
-        },
-        servers: [
-            {
-                url: `http://localhost:${process.env.PORT}`,
-            },
-        ],
-    },
-    apis: ['./src/handlers/*.js'],
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
+const swaggerDocument = YAML.load(path.join(__dirname, '../../openapi.yaml'));
+
+const swaggerDocs = swaggerDocument;
 
 export { swaggerUi, swaggerDocs };
