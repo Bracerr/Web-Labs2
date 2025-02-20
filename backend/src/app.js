@@ -16,6 +16,15 @@ const run = () => {
     const app = express();
     const PORT = process.env.PORT || RESERVE_PORT;
 
+    app.use((req, res, next) => {
+        const apiKey = req.headers['api_key'];
+        if (apiKey && apiKey === process.env.API_KEY) {
+            next();
+        } else {
+            res.status(403).json({ error: 'Неверный API_KEY' });
+        }
+    });
+
     app.use(morgan("[HTTP] :method :url :status - :response-time ms"));
 
     app.use(cors());
