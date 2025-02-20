@@ -16,6 +16,9 @@ const run = () => {
     const app = express();
     const PORT = process.env.PORT || RESERVE_PORT;
 
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
     app.use((req, res, next) => {
         const apiKey = req.headers['api_key'];
         if (apiKey && apiKey === process.env.API_KEY) {
@@ -32,7 +35,6 @@ const run = () => {
 
     app.use('/', router);
 
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
     app.listen(PORT, (err) => {
         if (err) {
