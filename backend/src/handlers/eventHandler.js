@@ -76,7 +76,7 @@ const eventHandler = {
             if (!deleted) {
                 return res.status(404).json({ error: 'Мероприятие не найдено' });
             }
-            res.status(204).send(); // Успешное удаление, без содержимого
+            res.status(204).send();
         } catch (error) {
             console.error('Ошибка при удалении мероприятия:', error);
             res.status(500).json({ error: 'Ошибка при удалении мероприятия' });

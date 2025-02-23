@@ -1,13 +1,14 @@
 import express from 'express';
 import cors from "cors";
 import { config } from "dotenv";
+import swaggerUi from "swagger-ui-express";
+
 import { router } from "./routes/router.js";
 import { authenticateDatabase } from "./config/db.js"
-import { syncDatabase } from "./config/sync.js";
+import { syncDatabase } from "./config/dbSync.js";
 import { setRelation } from "./models/relaition.js";
-import swaggerUi from "swagger-ui-express";
-import {swaggerDocs} from "./config/swagger.js";
-import morgan from "morgan";
+import { swaggerDocs } from "./config/swagger.js";
+import { apiKeyMiddleware, loggerMiddleware } from './middleware/middleware.js';
 
 config()
 
@@ -18,17 +19,8 @@ const run = () => {
 
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-
-    app.use((req, res, next) => {
-        const apiKey = req.headers['api_key'];
-        if (apiKey && apiKey === process.env.API_KEY) {
-            next();
-        } else {
-            res.status(403).json({ error: 'Неверный API_KEY' });
-        }
-    });
-
-    app.use(morgan("[HTTP] :method :url :status - :response-time ms"));
+    app.use(apiKeyMiddleware)
+    app.use(loggerMiddleware);
 
     app.use(cors());
     app.use(express.json());
