@@ -2,6 +2,7 @@ import express from 'express';
 import cors from "cors";
 import { config } from "dotenv";
 import swaggerUi from "swagger-ui-express";
+import path from "path";
 
 import { router } from "./routes/router.js";
 import { authenticateDatabase } from "./config/db.js"
@@ -9,27 +10,31 @@ import { syncDatabase } from "./config/dbSync.js";
 import { setRelation } from "./models/relaition.js";
 import { swaggerDocs } from "./config/swagger.js";
 import { apiKeyMiddleware, loggerMiddleware, validateJsonMiddleware, checkOtherErrorMiddleware } from './middleware/middleware.js';
-import path from "path";
-import {fileURLToPath} from "url";
+import { fileURLToPath } from "url";
+import { passport } from "./config/passport.js";
 
-config()
+config();
 
 const run = () => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const RESERVE_PORT = 8081
+    const RESERVE_PORT = 8081;
     const app = express();
     const PORT = process.env.PORT || RESERVE_PORT;
 
+    app.use(passport.initialize());
+
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
     app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
+    app.use(cors());
     app.use(express.json());
-    app.use(apiKeyMiddleware)
+
+    app.use(apiKeyMiddleware);
     app.use(loggerMiddleware);
     app.use(validateJsonMiddleware);
     app.use(checkOtherErrorMiddleware);
-    app.use(cors());
 
     app.use('/', router);
 
@@ -52,4 +57,4 @@ authenticateDatabase()
     .then(run)
     .catch(error => {
         console.error(error);
-    })
+    });

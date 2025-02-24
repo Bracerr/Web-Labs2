@@ -27,8 +27,18 @@ const validateJsonMiddleware = (err, req, res, next) => {
 const checkOtherErrorMiddleware = (err, req, res, next) => {
     console.error(err);
     res.status(500).json({ error: 'Внутренняя ошибка сервера' });
+    next()
 };
 
 const loggerMiddleware = morgan("[HTTP] :method :url :status - :response-time ms");
 
-export { apiKeyMiddleware, loggerMiddleware, validateIdMiddleware, validateJsonMiddleware, checkOtherErrorMiddleware };
+
+const handleAuthErrorMiddleware = (err, req, res, next) => {
+    if (err) {
+        return res.status(401).json({ error: 'Ошибка аутентификации', message: 'Неверный или отсутствующий токен' });
+    }
+    next();
+};
+
+export { apiKeyMiddleware, loggerMiddleware, validateIdMiddleware,
+    validateJsonMiddleware, checkOtherErrorMiddleware, handleAuthErrorMiddleware };
