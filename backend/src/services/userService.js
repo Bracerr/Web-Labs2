@@ -7,6 +7,9 @@ const userService = {
     getAllUsers: async () => {
         return await userRepository.getAllUsers();
     },
+    findUserByEmail: async (email) => {
+        return await userRepository.findUserByEmail(email);
+    }
 };
 
 export { userService };

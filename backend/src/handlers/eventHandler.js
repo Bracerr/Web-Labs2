@@ -94,7 +94,6 @@ const eventHandler = {
             return res.status(400).json({ error: 'Ошибка: файл не загружен' });
         }
 
-        // const imageUrl = path.join('uploads', req.file.filename);
         const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
         try {
             const updatedEvent = await eventService.updateEvent(id, { image_url: imageUrl });

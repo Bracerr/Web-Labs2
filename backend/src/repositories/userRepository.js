@@ -1,4 +1,4 @@
-import { User } from '../models/user.js';
+import {User} from '../models/user.js';
 
 const userRepository = {
     createUser: async (userData) => {
@@ -7,6 +7,9 @@ const userRepository = {
     getAllUsers: async () => {
         return await User.findAll();
     },
+    findUserByEmail: async (email) => {
+        return await User.findOne({where: {email}});
+    }
 };
 
 export { userRepository };
