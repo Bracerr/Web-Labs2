@@ -1,6 +1,10 @@
 import morgan from "morgan";
 
 const apiKeyMiddleware = (req, res, next) => {
+    if (req.path.startsWith('/uploads/')) {
+        return next();
+    }
+
     const apiKey = req.headers['api_key'];
     if (apiKey && apiKey === process.env.API_KEY) {
         next();
@@ -35,7 +39,7 @@ const loggerMiddleware = morgan("[HTTP] :method :url :status - :response-time ms
 
 const handleAuthErrorMiddleware = (err, req, res, next) => {
     if (err) {
-        return res.status(401).json({ error: 'Ошибка аутентификации', message: 'Неверный или отсутствующий токен' });
+        return res.status(401).json({ error: 'Неверный или отсутствующий токен' });
     }
     next();
 };

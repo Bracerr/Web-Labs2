@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { eventHandler } from "../handlers/eventHandler.js";
 import { upload } from "../config/multer.js";
-import { validateIdMiddleware } from "../middleware/middleware.js";
+import { validateIdMiddleware } from "../middleware/middlewares.js";
 
 const eventRouter = new Router();
 

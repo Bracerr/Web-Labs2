@@ -9,6 +9,9 @@ const userService = {
     },
     findUserByEmail: async (email) => {
         return await userRepository.findUserByEmail(email);
+    },
+    findUserById: async (id) => {
+        return await userRepository.findUserById(id);
     }
 };
 

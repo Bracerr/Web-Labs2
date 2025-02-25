@@ -3,14 +3,14 @@ import cors from "cors";
 import { config } from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
+import { fileURLToPath } from "url";
 
 import { router } from "./routes/router.js";
 import { authenticateDatabase } from "./config/db.js"
 import { syncDatabase } from "./config/dbSync.js";
 import { setRelation } from "./models/relaition.js";
 import { swaggerDocs } from "./config/swagger.js";
-import { apiKeyMiddleware, loggerMiddleware, validateJsonMiddleware, checkOtherErrorMiddleware } from './middleware/middleware.js';
-import { fileURLToPath } from "url";
+import { apiKeyMiddleware, loggerMiddleware, validateJsonMiddleware, checkOtherErrorMiddleware } from './middleware/middlewares.js';
 import { passport } from "./config/passport.js";
 
 config();
@@ -21,8 +21,6 @@ const run = () => {
     const RESERVE_PORT = 8081;
     const app = express();
     const PORT = process.env.PORT || RESERVE_PORT;
-
-    app.use(passport.initialize());
 
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 

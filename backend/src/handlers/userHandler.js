@@ -6,8 +6,8 @@ const userHandler = {
             const users = await userService.getAllUsers();
             res.status(200).json(users);
         } catch (error) {
-            console.error('Ошибка при получении пользователей:', error);
-            res.status(500).json({error: 'Ошибка при получении пользователей'});
+            console.error('Ошибка при получении пользователей: ' + error.message);
+            res.status(500).json({error: 'Ошибка при получении пользователей: ' + error.message});
         }
     },
 };
