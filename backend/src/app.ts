@@ -20,29 +20,24 @@ import {
 
 config();
 
+const app: Application = express();
+
 const run = (): void => {
   const __filename: string = fileURLToPath(import.meta.url);
   const __dirname: string = path.dirname(__filename);
   const RESERVE_PORT: number = 8081;
-  const app: Application = express();
   const PORT: string | number = process.env.PORT || RESERVE_PORT;
 
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
   app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
-
   app.use(cors());
   app.use(express.json());
-
   app.use(passport.initialize());
-
   app.use(apiKeyMiddleware);
   app.use(loggerMiddleware);
   app.use(validateJsonMiddleware);
   app.use(checkOtherErrorMiddleware);
-
   app.use('/', router);
-
   app.use((req: Request, res: Response, _next: NextFunction): void => {
     res.status(404).json({ error: 'Ресурс не найден' });
   });
@@ -56,6 +51,8 @@ const run = (): void => {
   });
 };
 
+export { app };
+
 authenticateDatabase()
   .then(syncDatabase)
   .then(setRelation)
@@ -63,3 +60,6 @@ authenticateDatabase()
   .catch((error: Error) => {
     console.error(error);
   });
+
+
+

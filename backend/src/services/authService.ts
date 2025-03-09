@@ -10,6 +10,7 @@ import {
   UnauthorizedError,
 } from '../errors/customErrors.js';
 import { refreshTokenRepository } from '../repositories/refreshTokenRepository.js';
+import { User } from '../models/user.js';
 
 config();
 
@@ -80,6 +81,14 @@ const authService = {
       );
     }
   },
+
+  deleteTestUsers: async () => {
+    await User.destroy({
+      where: {
+        username: 'testuser'
+      }
+    });
+  }
 };
 
 export { authService, AuthResponse, UserResponse };

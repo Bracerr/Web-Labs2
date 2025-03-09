@@ -14,6 +14,13 @@ const authHandler = {
         .json({ message: 'username, email и password обязательны.' });
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ message: 'Некорректный формат email.' });
+    }
+
     try {
       const newUser = await authService.registerUser(username, email, password);
       res.status(200).json(newUser);
@@ -63,6 +70,14 @@ const authHandler = {
       );
     }
   }) as RequestHandler,
+
+  deleteTestUsers: async () => {
+    try {
+      await authService.deleteTestUsers();
+    } catch (error) {
+      console.error('Ошибка при удалении тестовых пользователей:', error);
+    }
+  }
 };
 
 export { authHandler };
