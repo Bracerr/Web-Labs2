@@ -34,6 +34,12 @@ User.init({
     sequelize,
     modelName: 'User',
     timestamps: false,
+    toJSON: {
+        transform: function(doc, ret) {
+            delete ret.password;
+            return ret;
+        }
+    }
 });
 
 User.beforeCreate(async (user) => {

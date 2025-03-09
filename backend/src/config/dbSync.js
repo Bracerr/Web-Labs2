@@ -4,12 +4,12 @@ import { RefreshToken } from "../models/refreshToken.js";
 
 const syncDatabase = async () => {
     try {
-        await User.sync({ force: false });
-        await Event.sync({ force: false })
-        await RefreshToken.sync({ force: false });
+        await User.sync({ alter: true });
+        await Event.sync({ alter: true });
+        await RefreshToken.sync({ alter: true });
         console.log('База данных синхронизирована');
     } catch (error) {
-        console.error('Ошибка при синхронизации базы данных');
+        console.error('Ошибка при синхронизации базы данных:', error.message);
         throw error;
     }
 };

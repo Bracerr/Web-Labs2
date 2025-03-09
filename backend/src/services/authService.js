@@ -16,7 +16,9 @@ const authService = {
         }
 
         try {
-            return await userService.createUser({ username, email, password });
+            const user = await userService.createUser({ username, email, password });
+            const { password: _, ...userWithoutPassword } = user.toJSON();
+            return userWithoutPassword;
         } catch (error) {
             throw new InternalServerError('Ошибка при создании пользователя:' + error.message);
         }
