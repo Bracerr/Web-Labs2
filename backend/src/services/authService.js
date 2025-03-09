@@ -2,49 +2,63 @@ import bcrypt from 'bcryptjs';
 import { config } from 'dotenv';
 
 import { userService } from './userService.js';
-import { generateAccessToken, generateRefreshToken} from "../utils/jwt.js";
-import {BadRequestError, InternalServerError, NotFoundError, UnauthorizedError} from "../errors/customErrors.js";
-import { refreshTokenRepository } from "../repositories/refreshTokenRepository.js";
+import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js';
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+  UnauthorizedError,
+} from '../errors/customErrors.js';
+import { refreshTokenRepository } from '../repositories/refreshTokenRepository.js';
 
 config();
 
 const authService = {
-    registerUser: async (username, email, password) => {
-        const existingUser = await userService.findUserByEmail(email);
-        if (existingUser) {
-            throw new BadRequestError('Пользователь с таким email уже существует.');
-        }
+  registerUser: async (username, email, password) => {
+    const existingUser = await userService.findUserByEmail(email);
+    if (existingUser) {
+      throw new BadRequestError('Пользователь с таким email уже существует.');
+    }
 
-        try {
-            const user = await userService.createUser({ username, email, password });
-            const { password: _, ...userWithoutPassword } = user.toJSON();
-            return userWithoutPassword;
-        } catch (error) {
-            throw new InternalServerError('Ошибка при создании пользователя:' + error.message);
-        }
-    },
+    try {
+      const user = await userService.createUser({ username, email, password });
+      const { password: _, ...userWithoutPassword } = user.toJSON();
+      return userWithoutPassword;
+    } catch (error) {
+      throw new InternalServerError(
+        'Ошибка при создании пользователя:' + error.message,
+      );
+    }
+  },
 
-    loginUser: async (email, password) => {
-        const existingUser = await userService.findUserByEmail(email);
-        if (!existingUser) {
-            throw new NotFoundError('Пользователь не найден.');
-        }
+  loginUser: async (email, password) => {
+    const existingUser = await userService.findUserByEmail(email);
+    if (!existingUser) {
+      throw new NotFoundError('Пользователь не найден.');
+    }
 
-        const isPasswordMatch = await bcrypt.compare(password, existingUser.password);
-        if (!isPasswordMatch) {
-            throw new UnauthorizedError('Неверный пароль.');
-        }
+    const isPasswordMatch = await bcrypt.compare(
+      password,
+      existingUser.password,
+    );
+    if (!isPasswordMatch) {
+      throw new UnauthorizedError('Неверный пароль.');
+    }
 
-        try {
-            const accessTokenString = await generateAccessToken(existingUser);
-            const refreshTokenObject = await generateRefreshToken(existingUser);
-            const savedToken = await refreshTokenRepository.saveOrUpdateToken(existingUser.id, refreshTokenObject);
-            return { accessToken: accessTokenString, refreshToken: savedToken.token};
-        } catch (error) {
-            throw new InternalServerError('Ошибка при авторизации пользователя: ' + error.message);
-        }
-    },
+    try {
+      const accessTokenString = await generateAccessToken(existingUser);
+      const refreshTokenObject = await generateRefreshToken(existingUser);
+      const savedToken = await refreshTokenRepository.saveOrUpdateToken(
+        existingUser.id,
+        refreshTokenObject,
+      );
+      return { accessToken: accessTokenString, refreshToken: savedToken.token };
+    } catch (error) {
+      throw new InternalServerError(
+        'Ошибка при авторизации пользователя: ' + error.message,
+      );
+    }
+  },
 };
-
 
 export { authService };

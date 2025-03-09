@@ -1,58 +1,62 @@
 import express from 'express';
-import cors from "cors";
-import { config } from "dotenv";
-import swaggerUi from "swagger-ui-express";
-import path from "path";
-import { fileURLToPath } from "url";
+import cors from 'cors';
+import { config } from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-import { router } from "./routes/router.js";
-import { authenticateDatabase } from "./config/db.js"
-import { syncDatabase } from "./config/dbSync.js";
-import { setRelation } from "./models/relaition.js";
-import { swaggerDocs } from "./config/swagger.js";
-import { apiKeyMiddleware, loggerMiddleware, validateJsonMiddleware, checkOtherErrorMiddleware } from './middleware/middlewares.js';
-import { passport } from "./config/passport.js";
+import { router } from './routes/router.js';
+import { authenticateDatabase } from './config/db.js';
+import { syncDatabase } from './config/dbSync.js';
+import { setRelation } from './models/relaition.js';
+import { swaggerDocs } from './config/swagger.js';
+import {
+  apiKeyMiddleware,
+  loggerMiddleware,
+  validateJsonMiddleware,
+  checkOtherErrorMiddleware,
+} from './middleware/middlewares.js';
 
 config();
 
 const run = () => {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-    const RESERVE_PORT = 8081;
-    const app = express();
-    const PORT = process.env.PORT || RESERVE_PORT;
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const RESERVE_PORT = 8081;
+  const app = express();
+  const PORT = process.env.PORT || RESERVE_PORT;
 
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-    app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+  app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-    app.use(cors());
-    app.use(express.json());
+  app.use(cors());
+  app.use(express.json());
 
-    app.use(apiKeyMiddleware);
-    app.use(loggerMiddleware);
-    app.use(validateJsonMiddleware);
-    app.use(checkOtherErrorMiddleware);
+  app.use(apiKeyMiddleware);
+  app.use(loggerMiddleware);
+  app.use(validateJsonMiddleware);
+  app.use(checkOtherErrorMiddleware);
 
-    app.use('/', router);
+  app.use('/', router);
 
-    app.use((req, res, next) => {
-        res.status(404).json({ error: 'Ресурс не найден' });
-    });
+  app.use((req, res, _next) => {
+    res.status(404).json({ error: 'Ресурс не найден' });
+  });
 
-    app.listen(PORT, (err) => {
-        if (err) {
-            console.error('Ошибка при запуске сервера:', err);
-            return;
-        }
-        console.log(`Сервер запущен на порту: ${PORT}`);
-    });
+  app.listen(PORT, (err) => {
+    if (err) {
+      console.error('Ошибка при запуске сервера:', err);
+      return;
+    }
+    console.log(`Сервер запущен на порту: ${PORT}`);
+  });
 };
 
 authenticateDatabase()
-    .then(syncDatabase)
-    .then(setRelation)
-    .then(run)
-    .catch(error => {
-        console.error(error);
-    });
+  .then(syncDatabase)
+  .then(setRelation)
+  .then(run)
+  .catch((error) => {
+    console.error(error);
+  });

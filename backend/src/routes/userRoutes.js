@@ -1,5 +1,5 @@
-import { Router } from "express";
-import { userHandler } from "../handlers/userHandler.js";
+import { Router } from 'express';
+import { userHandler } from '../handlers/userHandler.js';
 
 const userRouter = new Router();
 

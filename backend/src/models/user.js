@@ -4,46 +4,49 @@ import bcrypt from 'bcryptjs';
 
 class User extends Model {}
 
-User.init({
+User.init(
+  {
     id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
     },
     username: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true,
-        },
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     createdAt: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
-}, {
+  },
+  {
     sequelize,
     modelName: 'User',
     timestamps: false,
     toJSON: {
-        transform: function(doc, ret) {
-            delete ret.password;
-            return ret;
-        }
-    }
-});
+      transform: function (doc, ret) {
+        delete ret.password;
+        return ret;
+      },
+    },
+  },
+);
 
 User.beforeCreate(async (user) => {
-    user.password = await bcrypt.hash(user.password, 10);
+  user.password = await bcrypt.hash(user.password, 10);
 });
 
 export { User };

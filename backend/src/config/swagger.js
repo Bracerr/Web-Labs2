@@ -1,5 +1,5 @@
 import swaggerUi from 'swagger-ui-express';
-import path from "path";
+import path from 'path';
 import YAML from 'yamljs';
 import { fileURLToPath } from 'url';
 
