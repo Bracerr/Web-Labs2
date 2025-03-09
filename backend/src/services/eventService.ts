@@ -1,19 +1,28 @@
+import { Event } from '../models/event.js';
 import { eventRepository } from '../repositories/eventRepository.js';
 import { userRepository } from '../repositories/userRepository.js';
 import { NotFoundError } from '../errors/customErrors.js';
 
+interface EventData {
+  title: string;
+  description: string;
+  date: Date;
+  image_url?: string;
+  createdBy: number;
+}
+
 const eventService = {
-  getAllEvents: async () => {
+  getAllEvents: async (): Promise<Event[]> => {
     return await eventRepository.getAllEvents();
   },
-  getEventById: async (id) => {
+  getEventById: async (id: number): Promise<Event> => {
     const existingEvent = await eventRepository.getEventById(id);
     if (!existingEvent) {
       throw new NotFoundError('Мероприятие не найдено');
     }
     return existingEvent;
   },
-  createEvent: async (eventData) => {
+  createEvent: async (eventData: EventData): Promise<Event> => {
     const { createdBy } = eventData;
 
     const user = await userRepository.findUserById(createdBy);
@@ -22,14 +31,17 @@ const eventService = {
     }
     return await eventRepository.createEvent(eventData);
   },
-  updateEvent: async (id, eventData) => {
+  updateEvent: async (
+    id: number,
+    eventData: Partial<EventData>,
+  ): Promise<Event> => {
     const newEvent = await eventRepository.updateEvent(id, eventData);
     if (!newEvent) {
       throw new NotFoundError('Мероприятие не найдено');
     }
     return newEvent;
   },
-  deleteEvent: async (id) => {
+  deleteEvent: async (id: number): Promise<boolean> => {
     const isDeleted = await eventRepository.deleteEvent(id);
     if (!isDeleted) {
       throw new NotFoundError('Мероприятие не найдено');
@@ -38,4 +50,4 @@ const eventService = {
   },
 };
 
-export { eventService };
+export { eventService, EventData };

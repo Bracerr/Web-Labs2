@@ -3,7 +3,7 @@ import { eventHandler } from '../handlers/eventHandler.js';
 import { upload } from '../config/multer.js';
 import { validateIdMiddleware } from '../middleware/middlewares.js';
 
-const eventRouter = new Router();
+const eventRouter: Router = Router();
 
 eventRouter.get('/', eventHandler.getAllEvents);
 eventRouter.get('/:id', validateIdMiddleware, eventHandler.getEventById);

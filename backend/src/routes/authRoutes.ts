@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authHandler } from '../handlers/authHandler.js';
 
-const authRouter = new Router();
+const authRouter: Router = Router();
 
 authRouter.post('/signup', authHandler.registerUser);
 authRouter.post('/signin', authHandler.loginUser);

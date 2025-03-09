@@ -7,8 +7,13 @@ import {
 } from '../utils/jwt.js';
 import { userService } from './userService.js';
 
+interface TokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
 const refreshTokenService = {
-  refreshToken: async (refreshToken) => {
+  refreshToken: async (refreshToken: string): Promise<TokenResponse> => {
     const decoded = await decodeRefreshToken(refreshToken);
     const storedToken =
       await refreshTokenRepository.findTokenByString(refreshToken);
@@ -34,4 +39,4 @@ const refreshTokenService = {
   },
 };
 
-export { refreshTokenService };
+export { refreshTokenService, TokenResponse };

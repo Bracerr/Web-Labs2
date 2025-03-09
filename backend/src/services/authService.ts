@@ -13,25 +13,46 @@ import { refreshTokenRepository } from '../repositories/refreshTokenRepository.j
 
 config();
 
+interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface UserResponse {
+  id: number;
+  username: string;
+  email: string;
+  createdAt: Date;
+}
+
 const authService = {
-  registerUser: async (username, email, password) => {
+  registerUser: async (
+    username: string,
+    email: string,
+    password: string,
+  ): Promise<UserResponse> => {
     const existingUser = await userService.findUserByEmail(email);
     if (existingUser) {
       throw new BadRequestError('Пользователь с таким email уже существует.');
     }
 
     try {
-      const user = await userService.createUser({ username, email, password });
+      const user = await userService.createUser({
+        username,
+        email,
+        password,
+        createdAt: new Date(),
+      });
       const { password: _, ...userWithoutPassword } = user.toJSON();
       return userWithoutPassword;
     } catch (error) {
       throw new InternalServerError(
-        'Ошибка при создании пользователя:' + error.message,
+        'Ошибка при создании пользователя:' + (error as Error).message,
       );
     }
   },
 
-  loginUser: async (email, password) => {
+  loginUser: async (email: string, password: string): Promise<AuthResponse> => {
     const existingUser = await userService.findUserByEmail(email);
     if (!existingUser) {
       throw new NotFoundError('Пользователь не найден.');
@@ -55,10 +76,10 @@ const authService = {
       return { accessToken: accessTokenString, refreshToken: savedToken.token };
     } catch (error) {
       throw new InternalServerError(
-        'Ошибка при авторизации пользователя: ' + error.message,
+        'Ошибка при авторизации пользователя: ' + (error as Error).message,
       );
     }
   },
 };
 
-export { authService };
+export { authService, AuthResponse, UserResponse };

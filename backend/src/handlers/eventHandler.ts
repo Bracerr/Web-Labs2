@@ -1,35 +1,37 @@
+import { Request, Response, RequestHandler } from 'express';
 import { eventService } from '../services/eventService.js';
 import { handleError } from '../errors/customErrors.js';
+import { CustomError } from '../errors/customErrors.js';
 
 const eventHandler = {
-  getAllEvents: async (req, res) => {
+  getAllEvents: (async (req: Request, res: Response) => {
     try {
       const events = await eventService.getAllEvents();
       res.status(200).json(events);
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при получении мероприятий: ' + error.message,
+        error as CustomError,
+        'Ошибка при получении мероприятий: ' + (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 
-  getEventById: async (req, res) => {
+  getEventById: (async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const event = await eventService.getEventById(id);
+      const event = await eventService.getEventById(Number(id));
       res.status(200).json(event);
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при получении мероприятия: ' + error.message,
+        error as CustomError,
+        'Ошибка при получении мероприятия: ' + (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 
-  createEvent: async (req, res) => {
+  createEvent: (async (req: Request, res: Response) => {
     const { title, description, date, createdBy } = req.body;
     if (!title || !date || !createdBy) {
       return res
@@ -47,17 +49,23 @@ const eventHandler = {
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при создании мероприятия: ' + error.message,
+        error as CustomError,
+        'Ошибка при создании мероприятия: ' + (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 
-  updateEvent: async (req, res) => {
+  updateEvent: (async (req: Request, res: Response) => {
     const { id } = req.params;
     const { title, description, date, createdBy } = req.body;
 
-    const updateData = {};
+    const updateData: {
+      title?: string;
+      description?: string;
+      date?: Date;
+      createdBy?: number;
+    } = {};
+
     if (title) updateData.title = title;
     if (description) updateData.description = description;
     if (date) updateData.date = date;
@@ -67,21 +75,24 @@ const eventHandler = {
       return res.status(400).json({ error: 'Не переданы поля для обновления' });
     }
     try {
-      const updatedEvent = await eventService.updateEvent(id, updateData);
+      const updatedEvent = await eventService.updateEvent(
+        Number(id),
+        updateData,
+      );
       res.status(200).json(updatedEvent);
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при обновлении мероприятия: ' + error.message,
+        error as CustomError,
+        'Ошибка при обновлении мероприятия: ' + (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 
-  deleteEvent: async (req, res) => {
+  deleteEvent: (async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const deleted = await eventService.deleteEvent(id);
+      const deleted = await eventService.deleteEvent(Number(id));
       if (!deleted) {
         return res.status(404).json({ error: 'Мероприятие не найдено' });
       }
@@ -89,13 +100,13 @@ const eventHandler = {
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при удалении мероприятия: ' + error.message,
+        error as CustomError,
+        'Ошибка при удалении мероприятия: ' + (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 
-  uploadEventImage: async (req, res) => {
+  uploadEventImage: (async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!req.file) {
@@ -104,19 +115,20 @@ const eventHandler = {
 
     const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
     try {
-      const _event = await eventService.getEventById(id);
-      const updatedEvent = await eventService.updateEvent(id, {
+      const _event = await eventService.getEventById(Number(id));
+      const updatedEvent = await eventService.updateEvent(Number(id), {
         image_url: imageUrl,
       });
       res.status(200).json(updatedEvent);
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при загрузке изображения мероприятия: ' + error.message,
+        error as CustomError,
+        'Ошибка при загрузке изображения мероприятия: ' +
+          (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 };
 
 export { eventHandler };

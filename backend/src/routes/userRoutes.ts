@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { userHandler } from '../handlers/userHandler.js';
 
-const userRouter = new Router();
+const userRouter: Router = Router();
 
 userRouter.get('/', userHandler.getAllUsers);
 

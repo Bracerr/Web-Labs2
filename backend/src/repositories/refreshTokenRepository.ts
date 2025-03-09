@@ -1,10 +1,20 @@
 import { RefreshToken } from '../models/refreshToken.js';
 
+type TokenData = {
+  token: string;
+  expiresAt: Date;
+};
+
 const refreshTokenRepository = {
-  findTokenByString: async (tokenString) => {
+  findTokenByString: async (
+    tokenString: string,
+  ): Promise<RefreshToken | null> => {
     return await RefreshToken.findOne({ where: { token: tokenString } });
   },
-  saveOrUpdateToken: async (userId, newTokenObject) => {
+  saveOrUpdateToken: async (
+    userId: number,
+    newTokenObject: TokenData,
+  ): Promise<RefreshToken> => {
     const existingToken = await RefreshToken.findOne({
       where: { userId: userId },
     });
@@ -22,4 +32,5 @@ const refreshTokenRepository = {
     }
   },
 };
-export { refreshTokenRepository };
+
+export { refreshTokenRepository, TokenData };

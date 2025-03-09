@@ -1,9 +1,11 @@
+import { Request, Response, RequestHandler } from 'express';
 import { authService } from '../services/authService.js';
 import { handleError } from '../errors/customErrors.js';
 import { refreshTokenService } from '../services/refreshTokenService.js';
+import { CustomError } from '../errors/customErrors.js';
 
 const authHandler = {
-  registerUser: async (req, res) => {
+  registerUser: (async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
@@ -18,13 +20,13 @@ const authHandler = {
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при регистрации пользователя:' + error.message,
+        error as CustomError,
+        'Ошибка при регистрации пользователя:' + (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 
-  loginUser: async (req, res) => {
+  loginUser: (async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -39,13 +41,13 @@ const authHandler = {
     } catch (error) {
       handleError(
         res,
-        error,
-        'Ошибка при авторизации пользователя: ' + error.message,
+        error as CustomError,
+        'Ошибка при авторизации пользователя: ' + (error as Error).message,
       );
     }
-  },
+  }) as RequestHandler,
 
-  refreshToken: async (req, res) => {
+  refreshToken: (async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
     if (!refreshToken) {
       return res.status(400).json({ error: 'Refresh Token отсутствует' });
@@ -54,9 +56,13 @@ const authHandler = {
       const newTokens = await refreshTokenService.refreshToken(refreshToken);
       res.status(200).json(newTokens);
     } catch (error) {
-      handleError(res, error, 'Ошибка при обновлении токена: ' + error.message);
+      handleError(
+        res,
+        error as CustomError,
+        'Ошибка при обновлении токена: ' + (error as Error).message,
+      );
     }
-  },
+  }) as RequestHandler,
 };
 
 export { authHandler };

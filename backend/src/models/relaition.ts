@@ -2,7 +2,7 @@ import { User } from './user.js';
 import { Event } from './event.js';
 import { RefreshToken } from './refreshToken.js';
 
-const setRelation = async () => {
+const setRelation = async (): Promise<void> => {
   try {
     User.hasMany(Event, { foreignKey: 'createdBy' });
     Event.belongsTo(User, { foreignKey: 'createdBy' });
@@ -11,9 +11,9 @@ const setRelation = async () => {
     RefreshToken.belongsTo(User, { foreignKey: 'userId' });
 
     console.log('Установлены связи в таблицах');
-  } catch (err) {
+  } catch (error: unknown) {
     console.error('Ошибка при установлении связи в таблицах');
-    throw err;
+    throw error;
   }
 };
 
