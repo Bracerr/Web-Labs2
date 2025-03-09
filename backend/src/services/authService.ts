@@ -8,7 +8,7 @@ import {
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
-} from '@errors/customErrors.js';
+} from '../errors/customErrors.js';
 import { refreshTokenRepository } from '@repositories/refreshTokenRepository.js';
 import { User } from '@models/user.js';
 

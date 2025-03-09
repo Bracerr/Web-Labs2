@@ -3,7 +3,6 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 import { passport } from '@config/passport.js';
 import { router } from '@routes/router.js';
@@ -16,14 +15,14 @@ import {
   loggerMiddleware,
   validateJsonMiddleware,
   checkOtherErrorMiddleware,
-} from './middleware/middlewares.js';
+} from '@middleware/middlewares.js';
 
 config();
 
 const app: Application = express();
 
 const run = (): void => {
-  const __filename: string = fileURLToPath(import.meta.url);
+  const __filename: string = path.resolve();
   const __dirname: string = path.dirname(__filename);
   const RESERVE_PORT: number = 8081;
   const PORT: string | number = process.env.PORT || RESERVE_PORT;
