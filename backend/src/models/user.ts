@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   CreationOptional,
 } from 'sequelize';
-import { sequelize } from '../config/db.js';
+import { sequelize } from '@config/db.js';
 import bcrypt from 'bcryptjs';
 
 interface UserModel

@@ -1,6 +1,6 @@
-import { User } from '../models/user.js';
-import { Event } from '../models/event.js';
-import { RefreshToken } from '../models/refreshToken.js';
+import { User } from '@models/user.js';
+import { Event } from '@models/event.js';
+import { RefreshToken } from '@models/refreshToken.js';
 
 const syncDatabase = async (): Promise<void> => {
   try {

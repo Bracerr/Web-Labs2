@@ -1,10 +1,10 @@
 import request from 'supertest';
-import { app } from './app.js';
-import { sequelize } from './config/db.js';
-import { authHandler } from './handlers/authHandler.js';
+import { app } from '../app.js';
+import { sequelize } from '@config/db.js';
+import { authHandler } from '@handlers/authHandler.js';
 
 beforeAll(async () => {
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 });
 
 afterAll(async () => {
@@ -13,14 +13,14 @@ afterAll(async () => {
 });
 
 describe('Auth API Tests', () => {
-  const API_KEY = 'SECRET_KEY'; 
+  const API_KEY = 'SECRET_KEY';
 
   // Тесты базового функционала
   describe('Basic Functionality', () => {
     const validUser = {
       username: 'testuser',
       email: 'test@test.com',
-      password: 'password123'
+      password: 'password123',
     };
 
     test('Should successfully register a new user', async () => {
@@ -39,14 +39,13 @@ describe('Auth API Tests', () => {
         .set('api_key', API_KEY)
         .send({
           email: validUser.email,
-          password: validUser.password
+          password: validUser.password,
         });
       expect(res.status).toBe(200);
       expect(res.body).toHaveProperty('accessToken');
       expect(res.body).toHaveProperty('refreshToken');
     });
   });
-
 
   // Тесты на некорректные данные
   describe('Invalid Input Tests', () => {
@@ -55,7 +54,7 @@ describe('Auth API Tests', () => {
         .post('/auth/signup')
         .set('api_key', API_KEY)
         .send({
-          username: 'test'
+          username: 'test',
           // отсутствуют email и password
         });
       expect(res.status).toBe(400);
@@ -68,7 +67,7 @@ describe('Auth API Tests', () => {
         .send({
           username: 'test',
           email: 'invalid-email',
-          password: 'password123'
+          password: 'password123',
         });
       expect(res.status).toBe(400);
     });
@@ -79,7 +78,7 @@ describe('Auth API Tests', () => {
         .set('api_key', API_KEY)
         .send({
           email: 'test@test.com',
-          password: 'wrongpassword'
+          password: 'wrongpassword',
         });
       expect(res.status).toBe(401);
     });
@@ -104,7 +103,7 @@ describe('Auth API Tests', () => {
         .post('/auth/refresh')
         .set('api_key', API_KEY)
         .send({
-          refreshToken: 'invalid-token'
+          refreshToken: 'invalid-token',
         });
       expect(res.status).toBe(401);
     });
@@ -132,13 +131,11 @@ describe('Auth API Tests', () => {
   // Тесты на заголовки
   describe('Headers Tests', () => {
     test('Should fail without API key', async () => {
-      const res = await request(app)
-        .post('/auth/signup')
-        .send({
-          username: 'test',
-          email: 'test@test.com',
-          password: 'password123'
-        });
+      const res = await request(app).post('/auth/signup').send({
+        username: 'test',
+        email: 'test@test.com',
+        password: 'password123',
+      });
       expect(res.status).toBe(403);
     });
 
@@ -152,4 +149,3 @@ describe('Auth API Tests', () => {
     });
   });
 });
-

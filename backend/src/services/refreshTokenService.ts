@@ -1,11 +1,11 @@
-import { refreshTokenRepository } from '../repositories/refreshTokenRepository.js';
-import { NotFoundError, UnauthorizedError } from '../errors/customErrors.js';
+import { refreshTokenRepository } from '@repositories/refreshTokenRepository.js';
+import { NotFoundError, UnauthorizedError } from '@errors/customErrors.js';
 import {
   decodeRefreshToken,
   generateAccessToken,
   generateRefreshToken,
-} from '../utils/jwt.js';
-import { userService } from './userService.js';
+} from '@utils/jwt.js';
+import { userService } from '@services/userService.js';
 
 interface TokenResponse {
   accessToken: string;

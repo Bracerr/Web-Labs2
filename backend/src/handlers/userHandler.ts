@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { userService } from '../services/userService.js';
-import { handleError } from '../errors/customErrors.js';
-import { CustomError } from '../errors/customErrors.js';
+import { userService } from '@services/userService.js';
+import { handleError } from '@errors/customErrors.js';
+import { CustomError } from '@errors/customErrors.js';
 
 const userHandler = {
   getAllUsers: async (req: Request, res: Response) => {

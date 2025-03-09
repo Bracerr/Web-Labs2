@@ -1,4 +1,4 @@
-import { User, UserModel } from '../models/user.js';
+import { User, UserModel } from '@models/user.js';
 import { InferCreationAttributes } from 'sequelize';
 
 type UserData = Omit<InferCreationAttributes<UserModel>, 'id' | 'createdAt'>;

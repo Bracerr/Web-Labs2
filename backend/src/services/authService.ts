@@ -1,16 +1,16 @@
 import bcrypt from 'bcryptjs';
 import { config } from 'dotenv';
 
-import { userService } from './userService.js';
-import { generateAccessToken, generateRefreshToken } from '../utils/jwt.js';
+import { userService } from '@services/userService.js';
+import { generateAccessToken, generateRefreshToken } from '@utils/jwt.js';
 import {
   BadRequestError,
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
-} from '../errors/customErrors.js';
-import { refreshTokenRepository } from '../repositories/refreshTokenRepository.js';
-import { User } from '../models/user.js';
+} from '@errors/customErrors.js';
+import { refreshTokenRepository } from '@repositories/refreshTokenRepository.js';
+import { User } from '@models/user.js';
 
 config();
 
@@ -85,10 +85,10 @@ const authService = {
   deleteTestUsers: async () => {
     await User.destroy({
       where: {
-        username: 'testuser'
-      }
+        username: 'testuser',
+      },
     });
-  }
+  },
 };
 
 export { authService, AuthResponse, UserResponse };

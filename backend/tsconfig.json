@@ -8,7 +8,30 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@config": ["./src/config"],
+      "@config/*": ["./src/config/*"],
+      "@models": ["./src/models"],
+      "@models/*": ["./src/models/*"],
+      "@routes": ["./src/routes"],
+      "@routes/*": ["./src/routes/*"],
+      "@handlers": ["./src/handlers"],
+      "@handlers/*": ["./src/handlers/*"],
+      "@services": ["./src/services"],
+      "@services/*": ["./src/services/*"],
+      "@utils": ["./src/utils"],
+      "@utils/*": ["./src/utils/*"],
+      "@types": ["./src/types"],
+      "@types/*": ["./src/types/*"],
+      "@errors": ["./src/errors"],
+      "@errors/*": ["./src/errors/*"],
+      "@repositories": ["./src/repositories"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@middleware": ["./src/middleware"],
+      "@middleware/*": ["./src/middleware/*"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules"]

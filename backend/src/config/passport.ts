@@ -7,7 +7,7 @@ import {
 } from 'passport-jwt';
 import passport from 'passport';
 
-import { User } from '../models/user.js';
+import { User } from '@models/user.js';
 
 config();
 

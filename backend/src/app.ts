@@ -5,12 +5,12 @@ import swaggerUi from 'swagger-ui-express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { passport } from './config/passport.js';
-import { router } from './routes/router.js';
-import { authenticateDatabase } from './config/db.js';
-import { syncDatabase } from './config/dbSync.js';
-import { setRelation } from './models/relaition.js';
-import { swaggerDocs } from './config/swagger.js';
+import { passport } from '@config/passport.js';
+import { router } from '@routes/router.js';
+import { authenticateDatabase } from '@config/db.js';
+import { syncDatabase } from '@config/dbSync.js';
+import { setRelation } from '@models/relaition.js';
+import { swaggerDocs } from '@config/swagger.js';
 import {
   apiKeyMiddleware,
   loggerMiddleware,
@@ -60,6 +60,3 @@ authenticateDatabase()
   .catch((error: Error) => {
     console.error(error);
   });
-
-
-

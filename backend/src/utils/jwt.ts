@@ -3,8 +3,8 @@ import { config } from 'dotenv';
 import {
   InternalServerError,
   UnauthorizedError,
-} from '../errors/customErrors.js';
-import { User } from '../models/user.js';
+} from '@errors/customErrors.js';
+import { User } from '@models/user.js';
 
 config();
 

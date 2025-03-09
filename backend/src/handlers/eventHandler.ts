@@ -1,7 +1,7 @@
 import { Request, Response, RequestHandler } from 'express';
-import { eventService } from '../services/eventService.js';
-import { handleError } from '../errors/customErrors.js';
-import { CustomError } from '../errors/customErrors.js';
+import { eventService } from '@services/eventService.js';
+import { handleError } from '@errors/customErrors.js';
+import { CustomError } from '@errors/customErrors.js';
 
 const eventHandler = {
   getAllEvents: (async (req: Request, res: Response) => {

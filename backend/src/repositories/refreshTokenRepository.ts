@@ -1,4 +1,4 @@
-import { RefreshToken } from '../models/refreshToken.js';
+import { RefreshToken } from '@models/refreshToken.js';
 
 type TokenData = {
   token: string;

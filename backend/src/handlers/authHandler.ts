@@ -1,8 +1,8 @@
 import { Request, Response, RequestHandler } from 'express';
-import { authService } from '../services/authService.js';
-import { handleError } from '../errors/customErrors.js';
-import { refreshTokenService } from '../services/refreshTokenService.js';
-import { CustomError } from '../errors/customErrors.js';
+import { authService } from '@services/authService.js';
+import { handleError } from '@errors/customErrors.js';
+import { refreshTokenService } from '@services/refreshTokenService.js';
+import { CustomError } from '@errors/customErrors.js';
 
 const authHandler = {
   registerUser: (async (req: Request, res: Response) => {
@@ -16,9 +16,7 @@ const authHandler = {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res
-        .status(400)
-        .json({ message: 'Некорректный формат email.' });
+      return res.status(400).json({ message: 'Некорректный формат email.' });
     }
 
     try {
@@ -77,7 +75,7 @@ const authHandler = {
     } catch (error) {
       console.error('Ошибка при удалении тестовых пользователей:', error);
     }
-  }
+  },
 };
 
 export { authHandler };

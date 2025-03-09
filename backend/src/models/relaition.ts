@@ -1,6 +1,6 @@
-import { User } from './user.js';
-import { Event } from './event.js';
-import { RefreshToken } from './refreshToken.js';
+import { User } from '@models/user.js';
+import { Event } from '@models/event.js';
+import { RefreshToken } from '@models/refreshToken.js';
 
 const setRelation = async (): Promise<void> => {
   try {

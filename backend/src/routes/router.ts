@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
-import { userRouter } from './userRoutes.js';
-import { eventRouter } from './eventRoutes.js';
-import { authRouter } from './authRoutes.js';
-import { handleAuthErrorMiddleware } from '../middleware/middlewares.js';
+import { userRouter } from '@routes/userRoutes.js';
+import { eventRouter } from '@routes/eventRoutes.js';
+import { authRouter } from '@routes/authRoutes.js';
+import { handleAuthErrorMiddleware } from '@middleware/middlewares.js';
 import passport from 'passport';
 
 const router: Router = Router();

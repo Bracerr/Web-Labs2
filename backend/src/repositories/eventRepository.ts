@@ -1,4 +1,4 @@
-import { Event, EventModel } from '../models/event.js';
+import { Event, EventModel } from '@models/event.js';
 import { InferCreationAttributes } from 'sequelize';
 
 type EventData = Omit<InferCreationAttributes<EventModel>, 'id'>;

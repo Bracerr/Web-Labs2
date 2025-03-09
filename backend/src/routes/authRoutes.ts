@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authHandler } from '../handlers/authHandler.js';
+import { authHandler } from '@handlers/authHandler.js';
 
 const authRouter: Router = Router();
 

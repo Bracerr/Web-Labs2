@@ -1,7 +1,7 @@
-import { Event } from '../models/event.js';
-import { eventRepository } from '../repositories/eventRepository.js';
-import { userRepository } from '../repositories/userRepository.js';
-import { NotFoundError } from '../errors/customErrors.js';
+import { Event } from '@models/event.js';
+import { eventRepository } from '@repositories/eventRepository.js';
+import { userRepository } from '@repositories/userRepository.js';
+import { NotFoundError } from '@errors/customErrors.js';
 
 interface EventData {
   title: string;
