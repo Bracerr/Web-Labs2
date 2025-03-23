@@ -48,6 +48,9 @@ const eventService = {
     }
     return isDeleted;
   },
+  getEventsByUserId: async (userId: number): Promise<Event[]> => {
+    return await eventRepository.getEventsByUserId(userId);
+  },
 };
 
 export { eventService, EventData };

@@ -4,10 +4,10 @@ import { config } from 'dotenv';
 import { userService } from '@services/userService.js';
 import { generateAccessToken, generateRefreshToken } from '@utils/jwt.js';
 import {
-  BadRequestError,
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
+  UserAlreadyExistsError,
 } from '../errors/customErrors.js';
 import { refreshTokenRepository } from '@repositories/refreshTokenRepository.js';
 import { User } from '@models/user.js';
@@ -34,7 +34,9 @@ const authService = {
   ): Promise<UserResponse> => {
     const existingUser = await userService.findUserByEmail(email);
     if (existingUser) {
-      throw new BadRequestError('Пользователь с таким email уже существует.');
+      throw new UserAlreadyExistsError(
+        'Пользователь с таким email уже существует.',
+      );
     }
 
     try {

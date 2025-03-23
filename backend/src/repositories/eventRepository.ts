@@ -31,6 +31,9 @@ const eventRepository = {
     }
     return false;
   },
+  getEventsByUserId: async (userId: number): Promise<Event[]> => {
+    return await Event.findAll({ where: { createdBy: userId } });
+  },
 };
 
 export { eventRepository, EventData };

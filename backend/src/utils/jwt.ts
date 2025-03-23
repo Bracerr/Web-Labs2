@@ -17,13 +17,14 @@ interface RefreshTokenData {
 interface JwtPayload {
   id: number;
   email?: string;
+  username?: string;
   exp?: number;
 }
 
 const generateAccessToken = async (user: User): Promise<string> => {
   try {
     return jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, username: user.username },
       process.env.JWT_SECRET as Secret,
       { expiresIn: process.env.JWT_ACCESS_TIME_MINUTE + 'm' } as SignOptions,
     );

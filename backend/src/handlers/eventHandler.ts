@@ -106,6 +106,21 @@ const eventHandler = {
     }
   }) as RequestHandler,
 
+  getEventsByUserId: (async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    try {
+      const events = await eventService.getEventsByUserId(Number(userId));
+      res.status(200).json(events);
+    } catch (error) {
+      handleError(
+        res,
+        error as CustomError,
+        'Ошибка при получении мероприятий пользователя: ' +
+          (error as Error).message,
+      );
+    }
+  }) as RequestHandler,
+
   uploadEventImage: (async (req: Request, res: Response) => {
     const { id } = req.params;
 

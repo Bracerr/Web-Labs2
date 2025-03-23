@@ -15,9 +15,15 @@ class BadRequestError extends CustomError {
   }
 }
 
+class UserAlreadyExistsError extends CustomError {
+  constructor(message: string = 'Пользователь уже существует') {
+    super(message, 409);
+  }
+}
+
 class UnauthorizedError extends CustomError {
   constructor(message: string = 'Неавторизованный доступ') {
-    super(message, 401);
+    super(message, 403);
   }
 }
 
@@ -46,6 +52,7 @@ const handleError = (
 export {
   CustomError,
   BadRequestError,
+  UserAlreadyExistsError,
   UnauthorizedError,
   NotFoundError,
   InternalServerError,

@@ -63,7 +63,7 @@ const checkOtherErrorMiddleware: ErrorRequestHandler = (
 };
 
 const loggerMiddleware = morgan(
-  '[HTTP] :method :url :status - :response-time ms',
+  '[HTTP] :method :url :status - :response-time ms - :date[iso]',
 );
 
 const handleAuthErrorMiddleware: ErrorRequestHandler = (

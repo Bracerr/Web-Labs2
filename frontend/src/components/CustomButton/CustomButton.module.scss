@@ -1,0 +1,32 @@
+.button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &.primary {
+    background-color: #4a90e2;
+    color: white;
+
+    &:hover {
+      background-color: #357abd;
+    }
+  }
+
+  &.secondary {
+    background-color: transparent;
+    border: 2px solid #4a90e2;
+    color: #4a90e2;
+
+    &:hover {
+      background-color: rgba(74, 144, 226, 0.1);
+    }
+  }
+}
