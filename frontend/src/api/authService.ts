@@ -69,6 +69,9 @@ export const authService = {
       if (error.response?.status === 500) {
         throw new Error('Внутренняя ошибка сервера');
       }
+      if (error.code === 'ERR_NETWORK') {
+        throw new Error('Ошибка сети: сервер недоступен');
+      }
       throw new Error(`Ошибка при регистрации: ${error.message}`);
     }
   },

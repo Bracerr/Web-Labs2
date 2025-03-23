@@ -17,6 +17,9 @@ export const eventService = {
       if (error.response?.status === 401) {
         throw new Error('Необходима авторизация');
       }
+      if (error.code === 'ERR_NETWORK') {
+        throw new Error('Ошибка сети: сервер недоступен');
+      }
       throw new Error('Не удалось загрузить мероприятия');
     }
   },

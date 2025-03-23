@@ -31,7 +31,7 @@ export const Events: FC = () => {
         if (err instanceof Error && err.message === 'Необходима авторизация') {
           navigate('/login');
         } else {
-          setError('Не удалось загрузить мероприятия');
+          setError('Не удалось загрузить мероприятия. Попробуйте позже.');
         }
       } finally {
         setIsLoading(false);

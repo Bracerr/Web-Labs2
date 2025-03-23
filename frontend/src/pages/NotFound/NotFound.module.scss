@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .container {
   display: flex;
   justify-content: center;
@@ -37,6 +39,7 @@
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: darken(#4a90e2, 10%);
+    background-color: color.adjust(#4a90e2, $lightness: -10%);
   }
 }
+

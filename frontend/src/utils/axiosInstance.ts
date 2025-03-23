@@ -1,9 +1,11 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { TokenStorage } from './tokenStorage';
 import { authService } from '../api/authService';
+import { healthCheckService } from '../api/healthCheckService';
 
 interface CustomInternalAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
+  skipHealthCheck?: boolean;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -31,7 +33,14 @@ const processQueue = (error: Error | null, token: string | null = null) => {
 };
 
 axiosInstance.interceptors.request.use(
-  config => {
+  async (config: CustomInternalAxiosRequestConfig) => {
+    if (!config.skipHealthCheck) {
+      const isServerAvailable = await healthCheckService.checkServer();
+      if (!isServerAvailable) {
+        throw new Error('Сервер временно недоступен. Пожалуйста, попробуйте позже.');
+      }
+    }
+
     const token = TokenStorage.getTokens()?.accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
