@@ -3,7 +3,7 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import path from 'path';
-
+import { fileURLToPath } from 'url';
 import { passport } from '@config/passport.js';
 import { router } from '@routes/router.js';
 import { authenticateDatabase } from '@config/db.js';
@@ -22,8 +22,8 @@ config();
 const app: Application = express();
 
 const run = (): void => {
-  const __filename: string = path.resolve();
-  const __dirname: string = path.dirname(__filename);
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
   const RESERVE_PORT: number = 8081;
   const PORT: string | number = process.env.PORT || RESERVE_PORT;
 

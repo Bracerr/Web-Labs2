@@ -17,7 +17,7 @@ export const decodeJwt = (token: string): JwtPayload => {
         .join('')
     );
     return JSON.parse(jsonPayload);
-  } catch (error) {
+  } catch {
     throw new Error('Invalid token');
   }
 };

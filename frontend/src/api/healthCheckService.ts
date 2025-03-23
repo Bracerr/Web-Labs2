@@ -12,15 +12,15 @@ export const healthCheckService = {
     try {
       const config: CustomRequestConfig = {
         headers: {
-          'api_key': API_KEY
+          api_key: API_KEY,
         },
-        skipHealthCheck: true
+        skipHealthCheck: true,
       };
-      
+
       const response = await axios.get(API_URL, config);
       return response.status === 200;
-    } catch (error) {
+    } catch {
       return false;
     }
-  }
-}; 
+  },
+};

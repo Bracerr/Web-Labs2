@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 .container {
   display: flex;
@@ -42,4 +42,3 @@
     background-color: color.adjust(#4a90e2, $lightness: -10%);
   }
 }
-

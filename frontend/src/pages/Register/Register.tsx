@@ -33,10 +33,16 @@ export const Register: FC = () => {
     e.preventDefault();
     setError('');
 
+    const { confirmPassword, ...registerData } = formData;
+
+    if (confirmPassword !== registerData.password) {
+      setError('Пароли не совпадают');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const { confirmPassword, ...registerData } = formData;
       await authService.register(registerData);
       navigate('/login');
     } catch (err) {

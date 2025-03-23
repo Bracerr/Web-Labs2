@@ -1,6 +1,10 @@
 /.idea
-backend/node_modules
-node_modules
-backend/.env
-backend/package-lock.json
-.env
+/backend/node_modules
+/node_modules
+/backend/.env
+/backend/package-lock.json
+/uploads/*
+!uploads/.gitkeep
+*.jpg
+/frontend/.env
+/frontend/node_modules

@@ -5,8 +5,15 @@ import { EventCard } from '../../components/EventCard/EventCard';
 import { Header } from '../../components/Header/Header';
 import styles from './Events.module.scss';
 import { TokenStorage } from '../../utils/tokenStorage';
+import Masonry from 'react-masonry-css';
 
 export const Events: FC = () => {
+  const breakpointColumns = {
+    default: 4,
+    1200: 3,
+    900: 2,
+    600: 1,
+  };
   const navigate = useNavigate();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,13 +65,17 @@ export const Events: FC = () => {
         {error ? (
           <div className={styles.error}>{error}</div>
         ) : (
-          <div className={styles.grid}>
+          <Masonry
+            breakpointCols={breakpointColumns}
+            className={styles.masonryGrid}
+            columnClassName={styles.masonryColumn}
+          >
             {events.length > 0 ? (
               events.map(event => <EventCard key={event.id} event={event} />)
             ) : (
               <div className={styles.empty}>У вас пока нет мероприятий</div>
             )}
-          </div>
+          </Masonry>
         )}
       </main>
     </div>
