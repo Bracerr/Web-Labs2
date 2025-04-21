@@ -30,3 +30,16 @@
     }
   }
 }
+
+.danger {
+  background-color: #ff4444;
+  color: white;
+
+  &:hover {
+    background-color: #cc0000;
+  }
+
+  &:disabled {
+    background-color: #ffaaaa;
+  }
+}

@@ -4,17 +4,34 @@ import styles from './EventCard.module.scss';
 
 interface EventCardProps {
   event: Event;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-export const EventCard: FC<EventCardProps> = ({ event }) => {
-  const formattedDate = new Date(event.date).toLocaleDateString('ru-RU', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+export const EventCard: FC<EventCardProps> = ({ event, onEdit, onDelete }) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  };
 
   return (
     <div className={styles.card}>
+      <div className={styles.actions}>
+        <button 
+          className={styles.deleteButton}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+          title="Удалить мероприятие"
+        >
+          ✕
+        </button>
+      </div>
       {event.image_url && (
         <div className={styles.imageContainer}>
           <img src={event.image_url} alt={event.title} className={styles.image} />
@@ -23,7 +40,12 @@ export const EventCard: FC<EventCardProps> = ({ event }) => {
       <div className={styles.content}>
         <h3 className={styles.title}>{event.title}</h3>
         <p className={styles.description}>{event.description}</p>
-        <p className={styles.date}>{formattedDate}</p>
+        <p className={styles.date}>{formatDate(event.date)}</p>
+        {onEdit && (
+          <button className={styles.editButton} onClick={onEdit}>
+            Редактировать
+          </button>
+        )}
       </div>
     </div>
   );

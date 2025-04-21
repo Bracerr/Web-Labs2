@@ -1,25 +1,32 @@
 import { FC, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { CustomButton } from '../../components/CustomButton/CustomButton';
-import { authService } from '../../api/authService';
-import styles from './Register.module.scss';
 import { Header } from '../../components/Header/Header';
+import { AuthForm } from '../../components/common/AuthForm/AuthForm';
+import { Loader } from '../../components/common/Loader/Loader';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { register, clearError } from '../../features/auth/authSlice';
+import styles from './Register.module.scss';
 
 export const Register: FC = () => {
-  useEffect(() => {
-    document.title = 'Register';
-  }, []);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.auth);
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
     confirmPassword: '',
   });
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Register';
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,133 +38,116 @@ export const Register: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-
     const { confirmPassword, ...registerData } = formData;
 
     if (confirmPassword !== registerData.password) {
-      setError('Пароли не совпадают');
+      dispatch({ type: 'auth/setError', payload: 'Пароли не совпадают' });
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      await authService.register(registerData);
+      await dispatch(register(registerData)).unwrap();
       navigate('/login');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла ошибка при регистрации');
-    } finally {
-      setIsLoading(false);
+      console.error('Registration error:', err);
     }
   };
+
+  if (loading) {
+    return (
+      <>
+        <Header showAuthButtons={false} />
+        <Loader />
+      </>
+    );
+  }
 
   return (
     <>
       <Header showAuthButtons={false} />
       <div className={styles.container}>
-        <div className={styles.formWrapper}>
-          <form onSubmit={handleSubmit} className={styles.form}>
-            <h2>Регистрация</h2>
+        <AuthForm
+          title="Регистрация"
+          onSubmit={handleSubmit}
+          error={error}
+          loading={loading}
+          submitButtonText="Зарегистрироваться"
+          onErrorClose={() => dispatch(clearError())}
+        >
+          <div className={styles.inputGroup}>
+            <label htmlFor="username">Имя пользователя</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+              placeholder="Введите имя пользователя"
+            />
+          </div>
 
-            {error && <div className={styles.error}>{error}</div>}
+          <div className={styles.inputGroup}>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              placeholder="Введите email"
+            />
+          </div>
 
-            <div className={styles.inputGroup}>
-              <label htmlFor="username">Имя пользователя</label>
+          <div className={styles.inputGroup}>
+            <label htmlFor="password">Пароль</label>
+            <div className={styles.passwordInput}>
               <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={formData.password}
                 onChange={handleChange}
                 required
-                placeholder="Введите имя пользователя"
-                onInvalid={(e: React.InvalidEvent<HTMLInputElement>) => {
-                  e.preventDefault();
-                  setError('Пожалуйста, введите имя пользователя');
-                }}
+                placeholder="Введите пароль"
               />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
             </div>
+          </div>
 
-            <div className={styles.inputGroup}>
-              <label htmlFor="email">Email</label>
+          <div className={styles.inputGroup}>
+            <label htmlFor="confirmPassword">Подтверждение пароля</label>
+            <div className={styles.passwordInput}>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
                 onChange={handleChange}
                 required
-                placeholder="Введите email"
-                onInvalid={(e: React.InvalidEvent<HTMLInputElement>) => {
-                  e.preventDefault();
-                  setError('Пожалуйста, введите корректный email');
-                }}
+                placeholder="Подтвердите пароль"
               />
+              <button
+                type="button"
+                className={styles.showPasswordButton}
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+              </button>
             </div>
+          </div>
 
-            <div className={styles.inputGroup}>
-              <label htmlFor="password">Пароль</label>
-              <div className={styles.passwordInput}>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  placeholder="Введите пароль"
-                  onInvalid={(e: React.InvalidEvent<HTMLInputElement>) => {
-                    e.preventDefault();
-                    setError('Пожалуйста, введите пароль');
-                  }}
-                />
-                <button
-                  type="button"
-                  className={styles.showPasswordButton}
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.inputGroup}>
-              <label htmlFor="confirmPassword">Подтверждение пароля</label>
-              <div className={styles.passwordInput}>
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  placeholder="Подтвердите пароль"
-                  onInvalid={(e: React.InvalidEvent<HTMLInputElement>) => {
-                    e.preventDefault();
-                    setError('Пожалуйста, подтвердите пароль');
-                  }}
-                />
-                <button
-                  type="button"
-                  className={styles.showPasswordButton}
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-                </button>
-              </div>
-            </div>
-            <div className={styles.buttonContainer}>
-              <CustomButton type="submit" disabled={isLoading}>
-                {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
-              </CustomButton>
-            </div>
-
-            <p className={styles.loginLink}>
-              Уже есть аккаунт? <Link to="/login">Войти</Link>
-            </p>
-          </form>
-        </div>
+          <p className={styles.loginLink}>
+            Уже есть аккаунт? <Link to="/login">Войти</Link>
+          </p>
+        </AuthForm>
       </div>
     </>
   );

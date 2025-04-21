@@ -1,8 +1,9 @@
 import { FC } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CustomButton } from '../CustomButton/CustomButton';
-import { TokenStorage } from '../../utils/tokenStorage';
 import styles from './Header.module.scss';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { logout } from '../../features/auth/authSlice';
 
 interface HeaderProps {
   showAuthButtons?: boolean;
@@ -10,22 +11,26 @@ interface HeaderProps {
 
 export const Header: FC<HeaderProps> = ({ showAuthButtons = false }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    TokenStorage.removeTokens();
+  const handleLogout = async () => {
+    await dispatch(logout());
     navigate('/');
   };
 
   const renderAuthContent = () => {
     if (!showAuthButtons) return null;
 
-    if (!TokenStorage.isAuthenticated()) {
+    if (!isAuthenticated) {
       return (
         <div className={styles.authButtons}>
           <CustomButton variant="secondary" onClick={() => navigate('/login')}>
             Войти
           </CustomButton>
-          <CustomButton onClick={() => navigate('/register')}>Регистрация</CustomButton>
+          <CustomButton onClick={() => navigate('/register')}>
+            Регистрация
+          </CustomButton>
         </div>
       );
     }

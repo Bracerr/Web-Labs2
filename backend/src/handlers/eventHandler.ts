@@ -89,6 +89,23 @@ const eventHandler = {
     }
   }) as RequestHandler,
 
+  deleteEventPhoto: async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      const updatedEvent = await eventService.updateEvent(Number(id), {
+        image_url: '',
+      });
+      res.status(200).json(updatedEvent);
+    } catch (error) {
+      handleError(
+        res,
+        error as CustomError,
+        'Ошибка при удалении фото мероприятия: ' + (error as Error).message,
+      );
+    }
+  },
+
   deleteEvent: (async (req: Request, res: Response) => {
     const { id } = req.params;
     try {

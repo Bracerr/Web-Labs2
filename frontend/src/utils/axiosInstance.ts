@@ -4,14 +4,19 @@ import { authService } from '../api/authService';
 import { healthCheckService } from '../api/healthCheckService';
 
 interface CustomInternalAxiosRequestConfig extends InternalAxiosRequestConfig {
-  _retry?: boolean;
+  retry?: boolean;
   skipHealthCheck?: boolean;
 }
+
+type Queue = {
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
+};
 
 const API_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-const axiosInstance: AxiosInstance = axios.create({
+export const api: AxiosInstance = axios.create({
   baseURL: API_URL,
   headers: {
     api_key: API_KEY,
@@ -19,7 +24,7 @@ const axiosInstance: AxiosInstance = axios.create({
 });
 
 let isRefreshing = false;
-let failedQueue: { resolve: (value: unknown) => void; reject: (reason?: unknown) => void }[] = [];
+let failedQueue: Queue[] = [];
 
 const processQueue = (error: Error | null, token: string | null = null) => {
   failedQueue.forEach(promise => {
@@ -31,6 +36,8 @@ const processQueue = (error: Error | null, token: string | null = null) => {
   });
   failedQueue = [];
 };
+
+const axiosInstance = api;
 
 axiosInstance.interceptors.request.use(
   async (config: CustomInternalAxiosRequestConfig) => {
@@ -61,7 +68,7 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest.retry) {
       if (isRefreshing) {
         try {
           return new Promise((resolve, reject) => {
@@ -78,7 +85,7 @@ axiosInstance.interceptors.response.use(
         }
       }
 
-      originalRequest._retry = true;
+      originalRequest.retry = true;
       isRefreshing = true;
 
       try {

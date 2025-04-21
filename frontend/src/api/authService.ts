@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { api } from '../utils/axiosInstance';
 
 const API_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
@@ -31,31 +32,25 @@ interface ApiError {
 export const authService = {
   async login(data: LoginData): Promise<LoginResponse> {
     try {
-      const response = await axios.post(`${API_URL}/auth/signin`, data, {
-        headers: {
-          api_key: API_KEY,
-        },
-      });
-
+      const response = await api.post(`auth/signin`, data);
       return response.data;
-    } catch (error: unknown) {
+    } catch (error) {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 404) {
-          throw new Error(`Неверный email или пароль`);
+        if (error.response?.status === 404 || error.response?.status === 403) {
+          throw new Error('Неверный email или пароль');
         }
-        if (error.response?.status === 403) {
-          throw new Error(`Неверный email или пароль`);
+        if (error.response?.status === 400) {
+          const message = error.response.data?.message || 'Неверный формат данных';
+          throw new Error(message);
         }
         if (error.response?.status === 500) {
-          throw new Error(`Внутренняя ошибка сервера. Попробуйте позже.`);
+          throw new Error('Внутренняя ошибка сервера. Попробуйте позже.');
         }
         if (error.code === 'ERR_NETWORK') {
           throw new Error('Ошибка сети: сервер недоступен');
         }
       }
-      throw new Error(
-        `Произошла ошибка при входе: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`
-      );
+      throw new Error('Произошла неизвестная ошибка');
     }
   },
 

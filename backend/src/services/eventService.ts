@@ -7,7 +7,7 @@ interface EventData {
   title: string;
   description: string;
   date: Date;
-  image_url?: string;
+  image_url?: string | undefined;
   createdBy: number;
 }
 
@@ -32,6 +32,16 @@ const eventService = {
     return await eventRepository.createEvent(eventData);
   },
   updateEvent: async (
+    id: number,
+    eventData: Partial<EventData>,
+  ): Promise<Event> => {
+    const newEvent = await eventRepository.updateEvent(id, eventData);
+    if (!newEvent) {
+      throw new NotFoundError('Мероприятие не найдено');
+    }
+    return newEvent;
+  },
+  deleteEventPhoto: async (
     id: number,
     eventData: Partial<EventData>,
   ): Promise<Event> => {
