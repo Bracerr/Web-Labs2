@@ -130,3 +130,45 @@
     padding: 20px;
   }
 }
+
+.formGroup {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.errorInput {
+  border-color: #ff4444 !important;
+  background-color: #fff6f6;
+}
+
+.errorMessage {
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  font-size: 12px;
+  color: #ff4444;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+input {
+  &:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+  }
+  
+  &.errorInput:focus {
+    box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+  }
+}

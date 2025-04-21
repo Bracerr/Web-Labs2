@@ -6,12 +6,24 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { login, clearError } from '../../features/auth/authSlice';
 import styles from './Login.module.scss';
 import { AuthForm } from '../../components/common/AuthForm/AuthForm';
+import { useForm } from 'react-hook-form';
 
 export const Login: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isAuthenticated, loading, error } = useAppSelector((state) => state.auth);
   
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -29,14 +41,11 @@ export const Login: FC = () => {
     };
   }, [dispatch]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmitForm = async (data: { email: string; password: string }) => {
     try {
-      await dispatch(login({ email, password })).unwrap();
+      await dispatch(login({ email: data.email, password: data.password })).unwrap();
       navigate('/events');
     } catch (err) {
-      // Ошибка уже будет в состоянии Redux
       console.error('Login error:', err);
     }
   };
@@ -56,7 +65,7 @@ export const Login: FC = () => {
       <div className={styles.container}>
         <AuthForm
           title="Вход в систему"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(handleSubmitForm)}
           error={error}
           loading={loading}
           submitButtonText="Войти"
@@ -67,10 +76,11 @@ export const Login: FC = () => {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
               placeholder="Введите email"
+              {...register('email', { 
+                required: true 
+              })}
+              className={errors.email ? styles.errorInput : ''}
             />
           </div>
 
@@ -80,10 +90,11 @@ export const Login: FC = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
                 placeholder="Введите пароль"
+                {...register('password', { 
+                  required: true 
+                })}
+                className={errors.password ? styles.errorInput : ''}
               />
               <button
                 type="button"

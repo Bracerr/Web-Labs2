@@ -6,45 +6,38 @@ import { Loader } from '../../components/common/Loader/Loader';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { register, clearError } from '../../features/auth/authSlice';
 import styles from './Register.module.scss';
+import { useForm } from 'react-hook-form';
 
 export const Register: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { loading, error } = useAppSelector((state) => state.auth);
-
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  useEffect(() => {
-    document.title = 'Register';
-    return () => {
-      dispatch(clearError());
-    };
-  }, [dispatch]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const { confirmPassword, ...registerData } = formData;
-
-    if (confirmPassword !== registerData.password) {
-      dispatch({ type: 'auth/setError', payload: 'Пароли не совпадают' });
-      return;
+  const {
+    register: registerField,
+    handleSubmit,
+    formState: { errors },
+    watch
+  } = useForm({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     }
+  });
 
+  const password = watch('password');
+
+  const handleSubmitForm = async (data: {
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) => {
+    const { confirmPassword, ...registerData } = data;
     try {
       await dispatch(register(registerData)).unwrap();
       navigate('/login');
@@ -52,6 +45,13 @@ export const Register: FC = () => {
       console.error('Registration error:', err);
     }
   };
+
+  useEffect(() => {
+    document.title = 'Register';
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   if (loading) {
     return (
@@ -68,7 +68,7 @@ export const Register: FC = () => {
       <div className={styles.container}>
         <AuthForm
           title="Регистрация"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmit(handleSubmitForm)}
           error={error}
           loading={loading}
           submitButtonText="Зарегистрироваться"
@@ -79,11 +79,11 @@ export const Register: FC = () => {
             <input
               type="text"
               id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
               placeholder="Введите имя пользователя"
+              {...registerField('username', { 
+                required: true
+              })}
+              className={errors.username ? styles.errorInput : ''}
             />
           </div>
 
@@ -92,11 +92,11 @@ export const Register: FC = () => {
             <input
               type="email"
               id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
               placeholder="Введите email"
+              {...registerField('email', { 
+                required: true
+              })}
+              className={errors.email ? styles.errorInput : ''}
             />
           </div>
 
@@ -106,11 +106,11 @@ export const Register: FC = () => {
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
                 placeholder="Введите пароль"
+                {...registerField('password', { 
+                  required: true
+                })}
+                className={errors.password ? styles.errorInput : ''}
               />
               <button
                 type="button"
@@ -120,6 +120,11 @@ export const Register: FC = () => {
                 {showPassword ? '👁️' : '👁️‍🗨️'}
               </button>
             </div>
+            {errors.password && (
+              <span className={styles.errorMessage}>
+                {errors.password.message}
+              </span>
+            )}
           </div>
 
           <div className={styles.inputGroup}>
@@ -128,11 +133,12 @@ export const Register: FC = () => {
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
                 placeholder="Подтвердите пароль"
+                {...registerField('confirmPassword', { 
+                  required: true,
+                  validate: value => value === password
+                })}
+                className={errors.confirmPassword ? styles.errorInput : ''}
               />
               <button
                 type="button"
@@ -142,6 +148,11 @@ export const Register: FC = () => {
                 {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
               </button>
             </div>
+            {errors.confirmPassword && (
+              <span className={styles.errorMessage}>
+                {errors.confirmPassword.message}
+              </span>
+            )}
           </div>
 
           <p className={styles.loginLink}>

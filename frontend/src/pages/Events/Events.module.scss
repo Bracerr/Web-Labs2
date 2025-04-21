@@ -23,10 +23,13 @@
 }
 
 .title {
-  margin-bottom: 30px;
-  margin-top: 30px;
-  text-align: center;
+  margin: 0;
   color: #333;
+  
+  @media (max-width: 576px) {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
 }
 
 .error {
@@ -60,6 +63,13 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 0 15px;
+  
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
 }
 
 .confirmModal {
@@ -80,4 +90,11 @@
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+}
+
+.button {
+  @media (max-width: 576px) {
+    width: 100%;
+    max-width: 300px;
+  }
 }
