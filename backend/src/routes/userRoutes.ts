@@ -5,6 +5,6 @@ const userRouter: Router = Router();
 
 userRouter.get('/', userHandler.getAllUsers);
 userRouter.get('/profile', userHandler.getUserProfile);
-userRouter.put('/profile', userHandler.updateUserProfile)
+userRouter.put('/profile', userHandler.updateUserProfile);
 
 export { userRouter };
