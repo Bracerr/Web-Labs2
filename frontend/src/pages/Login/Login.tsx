@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Header } from '../../components/Header/Header';
 import { Loader } from '../../components/common/Loader/Loader';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -16,10 +16,12 @@ const schema = yup.object().shape({
 });
 
 export const Login: FC = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isAuthenticated, loading, error } = useAppSelector(state => state.auth);
   const [showPassword, setShowPassword] = useState(false);
+  const from = location.state?.from?.pathname || '/';
 
   const {
     register: registerField,
@@ -51,7 +53,7 @@ export const Login: FC = () => {
   const handleSubmitForm = async (data: { email: string; password: string }) => {
     try {
       await dispatch(login(data)).unwrap();
-      navigate('/events');
+      navigate(from, { replace: true });
     } catch (err) {
       console.error('Login error:', err);
     }
