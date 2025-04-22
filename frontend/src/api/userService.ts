@@ -17,6 +17,14 @@ interface User {
   name: string;
 }
 
+interface UpdateUserData {
+  firstName?: string;
+  lastName?: string;
+  middleName?: string;
+  gender?: 'male' | 'female';
+  birthDate?: string;
+}
+
 const API_URL = 'http://localhost:8081';
 
 export const userService = {
@@ -71,4 +79,13 @@ export const userService = {
       throw new Error('Не удалось получить данные профиля');
     }
   },
+
+  async updateProfile(data: UpdateUserData) {
+    try {
+      const response = await axiosInstance.put('/users/profile', data);
+      return response.data;
+    } catch (error) {
+      throw new Error('Не удалось обновить профиль');
+    }
+  }
 };
