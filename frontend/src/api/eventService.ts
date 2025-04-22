@@ -1,14 +1,13 @@
 import { AxiosError } from 'axios';
-import { getUserIdFromToken } from '../utils/jwtUtils';
 import axiosInstance from '../utils/axiosInstance';
-
+import { TokenStorage } from '../utils/tokenStorage';
 
 export interface Event {
   id: number;
   title: string;
   description: string;
   date: string;
-  userId: number;
+  createdBy: number;
   image_url?: string;
 }
 
@@ -18,88 +17,49 @@ export interface CreateEventData {
   date: string;
 }
 
-export interface UpdateEventData extends Partial<CreateEventData> {
-  id: number;
-}
-
 export const eventService = {
-  async getUserEvents(): Promise<Event[]> {
+  async getUserEvents(userId?: number): Promise<Event[]> {
     try {
-      const response = await axiosInstance.get('/events');
+      const url = userId ? `/events/user/${userId}` : '/events';
+      const response = await axiosInstance.get(url);
       return response.data;
-    } catch (error: unknown) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        throw new Error('Необходима авторизация');
-      }
+    } catch {
       throw new Error('Не удалось загрузить мероприятия');
     }
   },
 
   async createEvent(data: CreateEventData): Promise<Event> {
     try {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        throw new Error('Не авторизован');
-      }
-
-      const userId = getUserIdFromToken(token);
+      const userId = TokenStorage.getUserIdFromToken();
       if (!userId) {
-        throw new Error('Не удалось получить ID пользователя');
+        throw new Error('Не удалось определить пользователя');
       }
 
       const response = await axiosInstance.post('/events', {
         ...data,
-        date: new Date(data.date).toISOString(),
-        createdBy: userId
+        createdBy: userId,
       });
       return response.data;
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 400) {
-          throw new Error('Неверные данные для создания мероприятия');
-        }
-        if (error.response?.status === 401) {
-          throw new Error('Необходима авторизация');
-        }
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        throw new Error('Неверные данные мероприятия');
       }
       throw new Error('Не удалось создать мероприятие');
     }
   },
 
-  async updateEvent(data: UpdateEventData): Promise<Event> {
+  async updateEvent(id: number, data: CreateEventData): Promise<Event> {
     try {
-      const { id, ...updateData } = data;
-      const response = await axiosInstance.put(`/events/${id}`, updateData);
+      const response = await axiosInstance.put(`/events/${id}`, data);
       return response.data;
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 400) {
-          throw new Error('Неверные данные для обновления мероприятия');
-        }
-        if (error.response?.status === 401) {
-          throw new Error('Необходима авторизация');
-        }
-        if (error.response?.status === 404) {
-          throw new Error('Мероприятие не найдено');
-        }
+    } catch (error: any) {
+      if (error.response?.status === 400) {
+        throw new Error('Неверные данные мероприятия');
+      }
+      if (error.response?.status === 404) {
+        throw new Error('Мероприятие не найдено');
       }
       throw new Error('Не удалось обновить мероприятие');
-    }
-  },
-
-  async deleteEvent(id: number): Promise<void> {
-    try {
-      await axiosInstance.delete(`/events/${id}`);
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401) {
-          throw new Error('Необходима авторизация');
-        }
-        if (error.response?.status === 404) {
-          throw new Error('Мероприятие не найдено');
-        }
-      }
-      throw new Error('Не удалось удалить мероприятие');
     }
   },
 
@@ -108,15 +68,11 @@ export const eventService = {
     formData.append('image', file);
 
     try {
-      const response = await axiosInstance.post(
-        `/events/${eventId}/image`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await axiosInstance.post(`/events/${eventId}/image`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -145,6 +101,17 @@ export const eventService = {
         }
       }
       throw new Error('Не удалось удалить изображение');
+    }
+  },
+
+  async deleteEvent(id: number): Promise<void> {
+    try {
+      await axiosInstance.delete(`/events/${id}`);
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        throw new Error('Мероприятие не найдено');
+      }
+      throw new Error('Не удалось удалить мероприятие');
     }
   },
 };

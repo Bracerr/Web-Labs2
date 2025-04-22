@@ -6,27 +6,54 @@ import { CustomError } from '@errors/customErrors.js';
 
 const authHandler = {
   registerUser: (async (req: Request, res: Response) => {
-    const { username, email, password } = req.body;
+    const {
+      username,
+      email,
+      password,
+      firstName,
+      lastName,
+      middleName,
+      gender,
+      birthDate,
+    } = req.body;
 
-    if (!username || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: 'username, email и password обязательны.' });
+    if (
+      !username ||
+      !email ||
+      !password ||
+      !firstName ||
+      !lastName ||
+      !middleName ||
+      !gender ||
+      !birthDate
+    ) {
+      return res.status(400).json({
+        message: 'Все поля обязательны для заполнения',
+      });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({ message: 'Некорректный формат email.' });
+      return res.status(400).json({ message: 'Некорректный формат email' });
     }
 
     try {
-      const newUser = await authService.registerUser(username, email, password);
+      const newUser = await authService.registerUser(
+        username,
+        email,
+        password,
+        firstName,
+        lastName,
+        middleName,
+        gender,
+        new Date(birthDate),
+      );
       res.status(200).json(newUser);
     } catch (error) {
       handleError(
         res,
         error as CustomError,
-        'Ошибка при регистрации пользователя:' + (error as Error).message,
+        'Ошибка при регистрации пользователя',
       );
     }
   }) as RequestHandler,

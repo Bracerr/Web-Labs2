@@ -20,10 +20,8 @@ export const Modal: FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
             ×
           </button>
         </div>
-        <div className={styles.modalBody}>
-          {children}
-        </div>
+        <div className={styles.modalBody}>{children}</div>
       </div>
     </div>
   );
-}; 
+};

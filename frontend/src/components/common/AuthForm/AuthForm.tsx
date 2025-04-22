@@ -5,7 +5,7 @@ import styles from './AuthForm.module.scss';
 
 interface AuthFormProps {
   title: string;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: any) => void;
   error?: string | null;
   loading?: boolean;
   children: React.ReactNode;
@@ -24,7 +24,7 @@ export const AuthForm: FC<AuthFormProps> = ({
 }) => {
   return (
     <div className={styles.formWrapper}>
-      <form onSubmit={onSubmit} className={styles.form}>
+      <form className={styles.form}>
         <h2>{title}</h2>
 
         {error && <ErrorNotification message={error} onClose={onErrorClose} />}
@@ -32,11 +32,11 @@ export const AuthForm: FC<AuthFormProps> = ({
         {children}
 
         <div className={styles.buttonContainer}>
-          <CustomButton type="submit" disabled={loading}>
+          <CustomButton type="submit" disabled={loading} onClick={onSubmit}>
             {loading ? 'Загрузка...' : submitButtonText}
           </CustomButton>
         </div>
       </form>
     </div>
   );
-}; 
+};

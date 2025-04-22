@@ -23,29 +23,21 @@ const schema = yup.object().shape({
     .required('Название обязательно')
     .min(3, 'Название должно содержать минимум 3 символа')
     .max(100, 'Название не должно превышать 100 символов'),
-  description: yup
-    .string()
-    .max(1000, 'Описание не должно превышать 1000 символов'),
+  description: yup.string().max(1000, 'Описание не должно превышать 1000 символов'),
   date: yup
     .string()
     .required('Дата обязательна')
-    .test('future-date', 'Дата не может быть в прошлом', function(value) {
+    .test('future-date', 'Дата не может быть в прошлом', function (value) {
       if (!value) return false;
       const today = new Date();
-      today.setHours(0, 0, 0, 0); 
+      today.setHours(0, 0, 0, 0);
       const selectedDate = new Date(value);
-      selectedDate.setHours(0, 0, 0, 0); 
+      selectedDate.setHours(0, 0, 0, 0);
       return selectedDate >= today;
     }),
 });
 
-export const EventForm: FC<EventFormProps> = ({
-  event,
-  onSubmit,
-  onCancel,
-  error,
-  loading,
-}) => {
+export const EventForm: FC<EventFormProps> = ({ event, onSubmit, onCancel, error, loading }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [shouldDeleteImage, setShouldDeleteImage] = useState(false);
@@ -114,12 +106,11 @@ export const EventForm: FC<EventFormProps> = ({
     if (event?.id) {
       if (shouldDeleteImage) {
         await dispatch(deleteEventImage(event.id));
-      }
-      else if (selectedFile) {
+      } else if (selectedFile) {
         await dispatch(uploadEventImage({ eventId: event.id, file: selectedFile }));
       }
     }
-    
+
     await onSubmit(data);
   };
 
@@ -157,9 +148,7 @@ export const EventForm: FC<EventFormProps> = ({
           className={errors.description ? styles.errorInput : ''}
           rows={5}
         />
-        {errors.description && (
-          <p className={styles.errorText}>{errors.description.message}</p>
-        )}
+        {errors.description && <p className={styles.errorText}>{errors.description.message}</p>}
       </div>
 
       <div className={styles.formGroup}>
@@ -203,16 +192,10 @@ export const EventForm: FC<EventFormProps> = ({
             )}
           </div>
           {!shouldDeleteImage && previewUrl && (
-            <img 
-              src={previewUrl} 
-              alt="Изображение мероприятия" 
-              className={styles.previewImage}
-            />
+            <img src={previewUrl} alt="Изображение мероприятия" className={styles.previewImage} />
           )}
           {shouldDeleteImage && event.image_url && (
-            <p className={styles.deleteNote}>
-              Изображение будет удалено после сохранения
-            </p>
+            <p className={styles.deleteNote}>Изображение будет удалено после сохранения</p>
           )}
         </div>
       )}
@@ -227,4 +210,4 @@ export const EventForm: FC<EventFormProps> = ({
       </div>
     </form>
   );
-}; 
+};

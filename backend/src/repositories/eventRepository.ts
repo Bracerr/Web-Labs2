@@ -32,7 +32,10 @@ const eventRepository = {
     return false;
   },
   getEventsByUserId: async (userId: number): Promise<Event[]> => {
-    return await Event.findAll({ where: { createdBy: userId } });
+    return await Event.findAll({
+      where: { createdBy: userId },
+      order: [['id', 'DESC']]
+    });
   },
 };
 

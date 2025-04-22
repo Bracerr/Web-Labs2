@@ -1,0 +1,56 @@
+.container {
+  width: 100%;
+}
+
+.masonryGrid {
+  display: flex;
+  margin-left: -20px;
+  width: auto;
+}
+
+.masonryColumn {
+  padding-left: 20px;
+  background-clip: padding-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}
+
+.title {
+  margin: 0;
+  color: #333;
+
+  @media (max-width: 576px) {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+}
+
+.emptyContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.empty {
+  color: #666;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+} 

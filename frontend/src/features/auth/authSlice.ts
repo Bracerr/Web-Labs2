@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { authService } from '../../api/authService';
 import { TokenStorage } from '../../utils/tokenStorage';
 
@@ -8,15 +8,15 @@ interface AuthState {
   error: string | null;
 }
 
-interface LoginData {
-  email: string;
-  password: string;
-}
-
 interface RegisterData {
   username: string;
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  gender: 'male' | 'female';
+  birthDate: string;
 }
 
 export const login = createAsyncThunk(
@@ -63,31 +63,31 @@ const authSlice = createSlice({
     error: null,
   } as AuthState,
   reducers: {
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(login.pending, (state) => {
+      .addCase(login.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state) => {
+      .addCase(login.fulfilled, state => {
         state.isAuthenticated = true;
         state.loading = false;
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string || 'Произошла ошибка при входе';
+        state.error = (action.payload as string) || 'Произошла ошибка при входе';
         state.isAuthenticated = false;
       })
-      .addCase(register.pending, (state) => {
+      .addCase(register.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(register.fulfilled, (state) => {
+      .addCase(register.fulfilled, state => {
         state.loading = false;
         state.error = null;
       })
@@ -95,7 +95,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.fulfilled, state => {
         state.isAuthenticated = false;
         state.error = null;
       });
@@ -103,4 +103,4 @@ const authSlice = createSlice({
 });
 
 export const { clearError } = authSlice.actions;
-export default authSlice.reducer; 
+export default authSlice.reducer;

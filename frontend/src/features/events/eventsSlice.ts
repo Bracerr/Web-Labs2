@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Event, eventService, CreateEventData, UpdateEventData } from '../../api/eventService';
+import { Event, eventService, CreateEventData } from '../../api/eventService';
+import { TokenStorage } from '../../utils/tokenStorage';
 
 interface EventsState {
   items: Event[];
@@ -45,9 +46,10 @@ export const createEvent = createAsyncThunk(
 
 export const updateEvent = createAsyncThunk(
   'events/updateEvent',
-  async (data: UpdateEventData, { rejectWithValue }) => {
+  async (data: Event, { rejectWithValue }) => {
     try {
-      const event = await eventService.updateEvent(data);
+      const { id, ...updateData } = data;
+      const event = await eventService.updateEvent(id, updateData);
       return event;
     } catch (error) {
       return rejectWithValue(
@@ -99,23 +101,40 @@ export const deleteEventImage = createAsyncThunk(
   }
 );
 
+export const getUserEvents = createAsyncThunk(
+  'events/getUserEvents',
+  async ({ userId }: { userId?: number }, { rejectWithValue }) => {
+    try {
+      const tokens = TokenStorage.getTokens();
+      if (!tokens) {
+        throw new Error('Не найден токен авторизации');
+      }
+
+      const response = await eventService.getUserEvents(userId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const eventsSlice = createSlice({
   name: 'events',
   initialState,
   reducers: {
-    clearEvents: (state) => {
+    clearEvents: state => {
       state.items = [];
     },
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
     },
     setSelectedEvent: (state, action: PayloadAction<Event | null>) => {
       state.selectedEvent = action.payload;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchEvents.pending, (state) => {
+      .addCase(fetchEvents.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -128,7 +147,7 @@ const eventsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(createEvent.pending, (state) => {
+      .addCase(createEvent.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -141,7 +160,7 @@ const eventsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(updateEvent.pending, (state) => {
+      .addCase(updateEvent.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -157,7 +176,7 @@ const eventsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(deleteEvent.pending, (state) => {
+      .addCase(deleteEvent.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -170,7 +189,7 @@ const eventsSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(uploadEventImage.pending, (state) => {
+      .addCase(uploadEventImage.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -192,9 +211,21 @@ const eventsSlice = createSlice({
           state.items[index] = action.payload;
         }
         state.error = null;
+      })
+      .addCase(getUserEvents.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserEvents.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(getUserEvents.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
 export const { clearEvents, clearError, setSelectedEvent } = eventsSlice.actions;
-export default eventsSlice.reducer; 
+export default eventsSlice.reducer;

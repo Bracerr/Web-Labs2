@@ -3,7 +3,12 @@ import { Modal } from '../common/Modal/Modal';
 import { EventForm } from '../EventForm/EventForm';
 import { Event, CreateEventData } from '../../api/eventService';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { createEvent, updateEvent, clearError, uploadEventImage } from '../../features/events/eventsSlice';
+import {
+  createEvent,
+  updateEvent,
+  clearError,
+  uploadEventImage,
+} from '../../features/events/eventsSlice';
 
 interface EventModalProps {
   isOpen: boolean;
@@ -13,7 +18,7 @@ interface EventModalProps {
 
 export const EventModal: FC<EventModalProps> = ({ isOpen, onClose, event }) => {
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.events);
+  const { loading, error } = useAppSelector(state => state.events);
 
   const handleSubmit = async (data: CreateEventData) => {
     if (event) {
@@ -51,4 +56,4 @@ export const EventModal: FC<EventModalProps> = ({ isOpen, onClose, event }) => {
       />
     </Modal>
   );
-}; 
+};

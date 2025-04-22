@@ -6,6 +6,7 @@ interface EventCardProps {
   event: Event;
   onEdit: () => void;
   onDelete: () => void;
+  showEditButton?: boolean;
 }
 
 export const EventCard: FC<EventCardProps> = ({ event, onEdit, onDelete }) => {
@@ -21,9 +22,9 @@ export const EventCard: FC<EventCardProps> = ({ event, onEdit, onDelete }) => {
   return (
     <div className={styles.card}>
       <div className={styles.actions}>
-        <button 
+        <button
           className={styles.deleteButton}
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             onDelete();
           }}

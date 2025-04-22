@@ -23,6 +23,11 @@ interface UserResponse {
   id: number;
   username: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  gender: 'male' | 'female';
+  birthDate: Date;
   createdAt: Date;
 }
 
@@ -31,6 +36,11 @@ const authService = {
     username: string,
     email: string,
     password: string,
+    firstName: string,
+    lastName: string,
+    middleName: string,
+    gender: 'male' | 'female',
+    birthDate: Date,
   ): Promise<UserResponse> => {
     const existingUser = await userService.findUserByEmail(email);
     if (existingUser) {
@@ -44,6 +54,11 @@ const authService = {
         username,
         email,
         password,
+        firstName,
+        lastName,
+        middleName,
+        gender,
+        birthDate,
         createdAt: new Date(),
       });
       const { password: _, ...userWithoutPassword } = user.toJSON();

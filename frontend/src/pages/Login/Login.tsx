@@ -7,26 +7,33 @@ import { login, clearError } from '../../features/auth/authSlice';
 import styles from './Login.module.scss';
 import { AuthForm } from '../../components/common/AuthForm/AuthForm';
 import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const schema = yup.object().shape({
+  email: yup.string().required('Email обязателен').email('Введите корректный email'),
+  password: yup.string().required('Пароль обязателен'),
+});
 
 export const Login: FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isAuthenticated, loading, error } = useAppSelector((state) => state.auth);
-  
+  const { isAuthenticated, loading, error } = useAppSelector(state => state.auth);
+  const [showPassword, setShowPassword] = useState(false);
+
   const {
-    register,
+    register: registerField,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
+    resolver: yupResolver(schema),
     defaultValues: {
       email: '',
-      password: ''
-    }
+      password: '',
+    },
+    mode: 'onSubmit',
+    criteriaMode: 'all',
   });
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -43,7 +50,7 @@ export const Login: FC = () => {
 
   const handleSubmitForm = async (data: { email: string; password: string }) => {
     try {
-      await dispatch(login({ email: data.email, password: data.password })).unwrap();
+      await dispatch(login(data)).unwrap();
       navigate('/events');
     } catch (err) {
       console.error('Login error:', err);
@@ -77,11 +84,10 @@ export const Login: FC = () => {
               type="email"
               id="email"
               placeholder="Введите email"
-              {...register('email', { 
-                required: true 
-              })}
+              {...registerField('email')}
               className={errors.email ? styles.errorInput : ''}
             />
+            {errors.email && <span className={styles.errorMessage}>{errors.email.message}</span>}
           </div>
 
           <div className={styles.inputGroup}>
@@ -91,9 +97,7 @@ export const Login: FC = () => {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 placeholder="Введите пароль"
-                {...register('password', { 
-                  required: true 
-                })}
+                {...registerField('password')}
                 className={errors.password ? styles.errorInput : ''}
               />
               <button
@@ -104,6 +108,9 @@ export const Login: FC = () => {
                 {showPassword ? '👁️' : '👁️‍🗨️'}
               </button>
             </div>
+            {errors.password && (
+              <span className={styles.errorMessage}>{errors.password.message}</span>
+            )}
           </div>
 
           <p className={styles.registerLink}>

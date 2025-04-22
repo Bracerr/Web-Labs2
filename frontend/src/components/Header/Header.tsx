@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CustomButton } from '../CustomButton/CustomButton';
 import styles from './Header.module.scss';
@@ -12,11 +12,18 @@ interface HeaderProps {
 export const Header: FC<HeaderProps> = ({ showAuthButtons = false }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = useAppSelector(state => state.auth);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await dispatch(logout());
+    setIsMenuOpen(false);
     navigate('/');
+  };
+
+  const handleNavigation = (path: string) => {
+    setIsMenuOpen(false);
+    navigate(path);
   };
 
   const renderAuthContent = () => {
@@ -24,11 +31,11 @@ export const Header: FC<HeaderProps> = ({ showAuthButtons = false }) => {
 
     if (!isAuthenticated) {
       return (
-        <div className={styles.authButtons}>
-          <CustomButton variant="secondary" onClick={() => navigate('/login')}>
+        <div className={`${styles.authButtons} ${isMenuOpen ? styles.open : ''}`}>
+          <CustomButton variant="secondary" onClick={() => handleNavigation('/login')}>
             Войти
           </CustomButton>
-          <CustomButton onClick={() => navigate('/register')}>
+          <CustomButton onClick={() => handleNavigation('/register')}>
             Регистрация
           </CustomButton>
         </div>
@@ -36,7 +43,13 @@ export const Header: FC<HeaderProps> = ({ showAuthButtons = false }) => {
     }
 
     return (
-      <div className={styles.authButtons}>
+      <div className={`${styles.authButtons} ${isMenuOpen ? styles.open : ''}`}>
+        <CustomButton variant="secondary" onClick={() => handleNavigation('/events')}>
+          Мероприятия
+        </CustomButton>
+        <CustomButton variant="secondary" onClick={() => handleNavigation('/profile')}>
+          Профиль
+        </CustomButton>
         <CustomButton variant="secondary" onClick={handleLogout}>
           Выйти
         </CustomButton>
@@ -51,6 +64,14 @@ export const Header: FC<HeaderProps> = ({ showAuthButtons = false }) => {
           <h1>EventApp</h1>
         </Link>
       </div>
+      <button 
+        className={`${styles.burgerButton} ${isMenuOpen ? styles.open : ''}`}
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       {renderAuthContent()}
     </header>
   );

@@ -19,4 +19,4 @@ export const ErrorNotification: FC<ErrorNotificationProps> = ({ message, onClose
       </div>
     </div>
   );
-}; 
+};

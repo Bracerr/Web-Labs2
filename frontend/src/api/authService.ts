@@ -18,6 +18,11 @@ interface RegisterData {
   username: string;
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  gender: 'male' | 'female';
+  birthDate: string;
 }
 
 interface RefreshTokenResponse {
@@ -70,7 +75,9 @@ export const authService = {
         }
         if (error.response?.status === 409) {
           const apiError = error.response.data as ApiError;
-          throw new Error(apiError.message || 'Пользователь с таким email уже существует');
+          throw new Error(
+            apiError.message || 'Пользователь с таким email или именем пользователя уже существует'
+          );
         }
         if (error.response?.status === 500) {
           throw new Error('Внутренняя ошибка сервера');

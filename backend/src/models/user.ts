@@ -17,6 +17,11 @@ interface UserModel
   username: string;
   password: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  gender: 'male' | 'female';
+  birthDate: Date;
   createdAt: CreationOptional<Date>;
 }
 
@@ -28,6 +33,11 @@ class User
   declare username: string;
   declare password: string;
   declare email: string;
+  declare firstName: string;
+  declare lastName: string;
+  declare middleName: string;
+  declare gender: 'male' | 'female';
+  declare birthDate: Date;
   declare createdAt: CreationOptional<Date>;
 }
 
@@ -52,6 +62,42 @@ User.init(
       unique: true,
       validate: {
         isEmail: true,
+      },
+    },
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [2, 50],
+        is: /^[А-Яа-яЁё\s-]+$/i,
+      },
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [2, 50],
+        is: /^[А-Яа-яЁё\s-]+$/i,
+      },
+    },
+    middleName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [2, 50],
+        is: /^[А-Яа-яЁё\s-]+$/i,
+      },
+    },
+    gender: {
+      type: DataTypes.ENUM('male', 'female'),
+      allowNull: false,
+    },
+    birthDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        isDate: true,
+        isBefore: new Date().toISOString(),
       },
     },
     createdAt: {
